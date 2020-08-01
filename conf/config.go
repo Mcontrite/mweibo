@@ -3,7 +3,7 @@ package conf
 import (
 	"io/ioutil"
 
-	"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v2"
 )
 
 type Configuration struct {
@@ -26,6 +26,7 @@ type Configuration struct {
 	DBName     string `"yaml:DB_NAME"`
 	DBUser     string `"yaml:DB_USER"`
 	DBPassword string `"yaml:DB_PASSWORD"`
+	DSN        string `"yaml:DSN"`
 
 	MailDriver   string `"yaml:MAIL_DRIVER"`
 	MailHost     string `"yaml:MAIL_HOST"`
@@ -44,7 +45,7 @@ func GetConfiguration() *Configuration {
 func LoadConfiguration(path string) error {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		panic("Read config file error: ", err)
+		panic("Read config file error...")
 	}
 	var config Configuration
 	err = yaml.Unmarshal(data, &config)

@@ -3,8 +3,7 @@ package main
 import (
 	"flag"
 	"mweibo/conf"
-
-	"github.com/lexkong/log"
+	"mweibo/model"
 )
 
 func main() {
@@ -13,7 +12,18 @@ func main() {
 	flag.Parse()
 	err := conf.LoadConfiguration(*configuration)
 	if err != nil {
-		log.Fatalln("Read config file error...")
+		panic("Read config file error...")
 		return
 	}
+	db := model.InitDB()
+	db.AutoMigrate(
+		&model.User{},
+		&model.Follower{},
+		&model.Weibo{},
+		&model.Comment{},
+		&model.Tag{},
+		&model.TagWeibo{},
+		&model.PwdReset{},
+	)
+	defer db.Close()
 }
