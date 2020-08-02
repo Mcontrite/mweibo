@@ -1,7 +1,8 @@
 # SERVER
 SERVER_NAME: MWeiBo
 SERVER_RUNMODE: debug
-SERVER_Port: :8080
+SERVER_PORT: :8080
+# server_port: :8080
 SERVER_URL: http://localhost:8080 # 网站 url，内部跳转时会用到该项
 SERVER_KEY: base64:O+VQ74YEigLPDzLKnh2HW/yjCdU2ON9v7xuKBgSOEAo=
 SERVER_SessionKey: MWeiBoSession

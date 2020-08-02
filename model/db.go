@@ -2,8 +2,9 @@ package model
 
 import (
 	"fmt"
-	"mweibo/conf"
 	"time"
+
+	"github.com/lexkong/log"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -31,8 +32,11 @@ func InitDB() *gorm.DB {
 	// dbname := conf.GetConfiguration().DBName
 	// url := createDBUrl(user, pwd, host, port, dbname)
 	// db, err := gorm.Open(dbtype, url)
-	db, err := gorm.Open(conf.GetConfiguration().DBType, conf.GetConfiguration().DSN)
+	// db, err := gorm.Open(conf.GetConfiguration().DBType, conf.GetConfiguration().DSN)
+	str := "root:123456@tcp(127.0.0.1:3306)/mweibo?charset=utf8&parseTime=True&loc=Local"
+	db, err := gorm.Open("mysql", str)
 	if err != nil {
+		log.Fatal("Connect database  failed: ", err)
 		panic("Connect database  failed...")
 	}
 	db.DB().SetMaxIdleConns(10)

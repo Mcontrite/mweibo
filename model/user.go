@@ -8,14 +8,15 @@ import (
 
 type User struct {
 	gorm.Model
-	Username        string `gorm:"column:username;type:varchar(255);not null"`
-	Password        string `""`
-	Email           string
-	Avatar          string
-	ActiveToken     string
-	IsActive        uint
-	IsAdmin         uint
-	EmailVertifyAt  time.Time
-	RememberMeToken string
-	SecretKey       string `gorm:"default:null"`
+	Username        string    `gorm:"not null"`
+	Password        string    `gorm:"not null"`
+	Email           string    `gorm:"unique;not null"`
+	Avatar          string    `gorm:"not null"`
+	ActiveToken     string    `gorm:""`
+	IsActive        uint      `gorm:"type:tinyint(1);default:0"`
+	IsAdmin         uint      `gorm:"type:tinyint(1);default:1"`
+	EmailVertifyAt  time.Time `gorm:""`
+	RememberMeToken string    `gorm:""`
+	SecretKey       string    `gorm:"default:null"`
+	ExpireTime      time.Time `gorm:"default:null"`
 }
