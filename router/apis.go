@@ -8,4 +8,8 @@ import (
 
 func registerApis(g *gin.Engine) {
 	g.GET("/", ctr.Home)
+	g.GET("/register", ctr.RegisterGet)
+	g.POST("/register", ctr.RegisterPost)
+	g.GET("/login", ctr.LoginGet)
+	g.POST("/login", ctr.LoginPost)
 }

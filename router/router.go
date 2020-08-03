@@ -2,11 +2,18 @@ package router
 
 import (
 	"html/template"
+	"mweibo/model"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	SESSION_KEY      = "UserID"
+	CONTEXT_USER_KEY = "User"
+	SESSION_CAPTCHA  = "GinCaptcha"
 )
 
 func setSession(g *gin.Engine) {
@@ -20,6 +27,19 @@ func setSession(g *gin.Engine) {
 		Path:     "/",
 	})
 	g.Use(sessions.Sessions("gin-session", store))
+}
+
+func setContext() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+		if id := session.Get("UserID"); id != nil {
+			user, err := model.GetUserByID(id)
+			if err == nil {
+				c.Set(CONTEXT_USER_KEY, user)
+			}
+		}
+		c.Next()
+	}
 }
 
 func setTemplate(g *gin.Engine) {
@@ -40,6 +60,7 @@ func InitRouter() *gin.Engine {
 	g := gin.Default()
 	setSession(g)
 	setTemplate(g)
+	g.Use(setContext())
 	g.NoRoute(Handle404)
 	registerApis(g)
 	return g
