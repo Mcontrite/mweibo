@@ -12,4 +12,6 @@ func registerApis(g *gin.Engine) {
 	g.POST("/register", ctr.RegisterPost)
 	g.GET("/login", ctr.LoginGet)
 	g.POST("/login", ctr.LoginPost)
+	g.GET("/createweibo", ctr.CreateWeiboGet)
+	g.POST("/createweibo", ctr.CreateWeiboPost)
 }
