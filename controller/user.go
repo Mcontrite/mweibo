@@ -70,3 +70,19 @@ func LoginPost(c *gin.Context) {
 	session.Save()
 	c.Redirect(http.StatusMovedPermanently, "/")
 }
+
+func Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+	c.Redirect(http.StatusSeeOther, "/login")
+}
+
+func ListUsers(c *gin.Context) {
+	user, _ := c.Get(CONTEXT_USER_KEY)
+	users, _ := model.ListUsers()
+	c.HTML(http.StatusOK, "admin/users.html", gin.H{
+		"user":  user,
+		"users": users,
+	})
+}

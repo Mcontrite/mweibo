@@ -24,3 +24,7 @@ type TagWeibo struct {
 func CreateTagWeibo(tagweibo *TagWeibo) error {
 	return DB.Create(tagweibo).Error
 }
+
+func DeleteTagWeiboByWeiboID(id interface{}) error {
+	return DB.Delete(&TagWeibo{}, "weibo_id=?", id).Error
+}
