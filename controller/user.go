@@ -66,7 +66,7 @@ func LoginPost(c *gin.Context) {
 	}
 	session := sessions.Default(c)
 	session.Clear()
-	session.Set("UserID", user.ID)
+	session.Set(SESSION_KEY, user.ID)
 	session.Save()
 	c.Redirect(http.StatusMovedPermanently, "/")
 }
@@ -85,4 +85,69 @@ func ListUsers(c *gin.Context) {
 		"user":  user,
 		"users": users,
 	})
+}
+
+func UpdateUserAvatar(c *gin.Context) {
+	res := gin.H{}
+	defer writeJSON(c, res)
+	avatarurl := c.PostForm("avatarurl")
+	ctxuser, ok := c.Get(CONTEXT_USER_KEY)
+	if !ok {
+		res["message"] = "Get user error"
+		return
+	}
+	user := new(model.User)
+	user, ok = ctxuser.(*model.User)
+	err := model.UpdateUserAvatar(user, avatarurl)
+	if err != nil {
+		res["message"] = "Update avatar error " + err.Error()
+		return
+	}
+	res["secceed"] = true
+	res["user"] = model.User{
+		Avatar: avatarurl,
+	}
+}
+
+func BindUserEmail(c *gin.Context) {
+	res := gin.H{}
+	defer writeJSON(c, res)
+	email := c.PostForm("email")
+	ctxuser, ok := c.Get(CONTEXT_USER_KEY)
+	if !ok {
+		res["message"] = "Get user error"
+		return
+	}
+	user, _ := ctxuser.(*model.User)
+	if len(user.Email) > 0 {
+		res["message"] = "Email is null"
+		return
+	}
+	err := model.UpdateUserEmail(user, email)
+	if err != nil {
+		res["message"] = err.Error()
+		return
+	}
+	res["secceed"] = true
+}
+
+func UnbindUserEmail(c *gin.Context) {
+	res := gin.H{}
+	defer writeJSON(c, res)
+	ctxuser, ok := c.Get(CONTEXT_USER_KEY)
+	if !ok {
+		res["message"] = "Get user error"
+		return
+	}
+	user, _ := ctxuser.(*model.User)
+	if len(user.Email) > 0 {
+		res["message"] = "Email is null"
+		return
+	}
+	err := model.UpdateUserEmail(user, "")
+	if err != nil {
+		res["message"] = err.Error()
+		return
+	}
+	res["secceed"] = true
 }

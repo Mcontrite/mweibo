@@ -1,0 +1,26 @@
+{{define "weibo/update.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Weibo</title>
+</head>
+<body>
+    {{template "header.html" .}}
+    <span id="tagBug">
+        {{range $k,$v := .weibo.Tags}}
+        <button>
+                <a href="/tag/{{$v.ID}}">{{$v.Name}}</a>
+                <span>{{$v.ID}}</span>
+        </button>&nbsp;
+        {{end}}
+    </span><br/><br/>
+    <form action="" method="POST">
+        <input id="tags" name="tags" type="hidden">
+        <textarea id="demo" name="content">{{.weibo.Content}}</textarea><br/>
+        <button type="submit">更新</button>
+    </form>
+</body>
+</html>
+{{end}}

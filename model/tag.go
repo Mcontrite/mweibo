@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/jinzhu/gorm"
-	"github.com/lexkong/log"
 )
 
 type Tag struct {
@@ -35,13 +34,13 @@ func ListTags() (tags []*Tag, err error) {
 }
 
 func ListTagsByWeiboID(weiboid string) (tags []*Tag, err error) {
-	weiid, err := strconv.ParseUint(weiboid, 10, 64)
-	if err != nil {
-		log.Warnf("Parse error...")
-	}
+	weiid, _ := strconv.ParseUint(weiboid, 10, 64)
 	rows, err := DB.Raw("select t.* from tags t inner join tag_weibos tw on t.id=tw.tag_id where tw.weiboid=?",
 		uint(weiid),
 	).Rows()
+	if err != nil {
+		return nil, err
+	}
 	defer rows.Close()
 	for rows.Next() {
 		var tag Tag

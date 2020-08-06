@@ -28,7 +28,7 @@ func setSession(g *gin.Engine) {
 func setContext() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		if id := session.Get("UserID"); id != nil {
+		if id := session.Get(ctr.SESSION_KEY); id != nil {
 			user, err := model.GetUserByID(id)
 			if err == nil {
 				c.Set(ctr.CONTEXT_USER_KEY, user)
@@ -87,8 +87,8 @@ func GetCaptcha(c *gin.Context) {
 
 func InitRouter() *gin.Engine {
 	g := gin.Default()
-	setSession(g)
 	setTemplate(g)
+	setSession(g)
 	g.Use(setContext())
 	g.NoRoute(ctr.Handle404)
 	registerApis(g)

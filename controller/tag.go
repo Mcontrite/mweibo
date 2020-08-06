@@ -10,6 +10,22 @@ import (
 	"github.com/russross/blackfriday"
 )
 
+func CreateTag(c *gin.Context) {
+	res := gin.H{}
+	defer writeJSON(c, res)
+	content := c.PostForm("content")
+	tag := &model.Tag{
+		Content: content,
+	}
+	err := model.CreateTag(tag)
+	if err != nil {
+		res["message"] = err.Error()
+		return
+	}
+	res["secceed"] = true
+	res["data"] = tag
+}
+
 func DisplayTag(c *gin.Context) {
 	var (
 		tagname string

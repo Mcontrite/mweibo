@@ -22,13 +22,20 @@ func registerApis(g *gin.Engine) {
 	auth := g.Group("/auth")
 	auth.Use(Auth())
 	{
+		auth.PUT("/user", ctr.UpdateUserAvatar)
+		auth.POST("/bindemail", ctr.BindUserEmail)
+		auth.POST("/unbindemail", ctr.UnbindUserEmail)
+
 		auth.GET("/weibo", ctr.CreateWeiboGet)
 		auth.POST("/weibo", ctr.CreateWeiboPost)
-		auth.PUT("/weibo/:id", ctr.UpdateWeibo)
+		auth.GET("/weibo/:id", ctr.UpdateWeiboGet)
+		auth.POST("/weibo/:id", ctr.UpdateWeibo)
 
 		auth.POST("/comment", ctr.CreateComment)
 		auth.POST("/comment/:id", ctr.ReadComment)
-		auth.POST("/comment/all", ctr.ReadAllComments)
+		auth.POST("/comments", ctr.ReadAllComments)
+
+		auth.POST("/tag", ctr.CreateTag)
 	}
 	admin := g.Group("/admin")
 	admin.Use(Admin())
@@ -36,6 +43,7 @@ func registerApis(g *gin.Engine) {
 		admin.GET("/users", ctr.ListUsers)
 		admin.GET("/weibos", ctr.ListWeibos)
 
+		admin.DELETE("/weibo/:id", ctr.DeleteWeibo)
 		admin.DELETE("/comment/:id", ctr.DeleteComment)
 	}
 }

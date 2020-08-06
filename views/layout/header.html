@@ -1,0 +1,29 @@
+{{define "header.html"}}
+<nav>
+    <div>
+        <ul>
+            <li><a href="/">MWeiBo</a></li>
+            <li><a href="/">Admin</a></li>
+        </ul>
+        <ul>
+            {{if .user}}
+            <li><a href="/">This is {{.user.Username}}</a></li>
+            {{if .avatar}}
+            <div class="pull-left image"  >
+                <img src="{{.user.Avatar}}" width="40px" height="40px" style="border-radius: 50%; margin-top:5px">
+            </div>
+            {{else}}
+                <div class="pull-left image"  >
+                    <img src="/static/img/avatar.png">
+                </div>
+            {{end}}
+            <li><a href="/logout">退出登录</a></li>
+            {{else}}
+            <li><a href="/login">登录</a></li>
+            <li><a href="/register">注册</a></li>
+            ??
+            {{end}}
+        </ul>
+    </div>
+</nav>
+{{end}}

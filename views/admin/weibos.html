@@ -1,0 +1,27 @@
+{{define "admin/weibos.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weibos</title>
+</head>
+<body>
+    {{template "header.html" .}}
+    <h1>user List</h1> 
+    {{range .weibos}}
+    <tr>
+        <td>{{.ID}}</td>
+        <td><a href="/weibo/{{.ID}}">{{.Content}}</a></td>
+        
+        <td>{{.CreatedAt}}</td>
+        <td>{{.UpdatedAt}}</td>
+        <td>
+            <a href="/auth/weibo/{{.ID}}" >修改</a>
+            <a href="/admin/weibo/{{.ID}}">删除</a>
+        </td>
+    </tr><br>
+    {{end}}
+</body>
+</html>
+{{end}}

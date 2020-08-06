@@ -41,6 +41,18 @@ func CreateWeiboPost(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
+func UpdateWeiboGet(c *gin.Context) {
+	weiboid := c.Param("id")
+	weibo, err := model.GetWeiboByID(weiboid)
+	if err != nil {
+		return
+	}
+	weibo.Tags, _ = model.ListTagsByWeiboID(weiboid)
+	c.HTML(http.StatusOK, "weibo/update.html", gin.H{
+		"weibo": weibo,
+	})
+}
+
 func UpdateWeibo(c *gin.Context) {
 	weiboid := c.Param("id")
 	content := c.PostForm("content")
@@ -73,6 +85,26 @@ func UpdateWeibo(c *gin.Context) {
 		}
 	}
 	c.Redirect(http.StatusMovedPermanently, "/")
+}
+
+func DeleteWeibo(c *gin.Context) {
+	res := gin.H{}
+	defer writeJSON(c, res)
+	weiboid := c.Param("id")
+	weiid, _ := strconv.ParseUint(weiboid, 10, 64)
+	weibo := &model.Weibo{}
+	weibo.ID = uint(weiid)
+	err := model.DeleteWeibo(weibo)
+	if err != nil {
+		res["message"] = err.Error()
+		return
+	}
+	err = model.DeleteTagWeiboByWeiboID(weiid)
+	if err != nil {
+		res["message"] = err.Error()
+		return
+	}
+	res["secceed"] = true
 }
 
 func DisplayWeibo(c *gin.Context) {

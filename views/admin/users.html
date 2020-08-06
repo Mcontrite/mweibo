@@ -1,0 +1,23 @@
+{{define "admin/users.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+</head>
+<body>
+    {{template "header.html" .}}
+    <h1>user List</h1> 
+    {{range .users}}
+    <tr>
+        <td>{{.ID}}</td>
+        <td>{{.Username}}</td>
+        <td>{{if .IsAdmin}}√{{else}}×{{end}}</td>
+
+    <td>{{ .CreatedAt}}</td>
+    </tr><br>
+    {{end}}
+</body>
+</html>
+{{end}}

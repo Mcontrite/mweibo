@@ -10,7 +10,7 @@ type User struct {
 	gorm.Model
 	Username        string    `gorm:"not null"`
 	Password        string    `gorm:"not null"`
-	Email           string    `gorm:"unique;not null"`
+	Email           string    `gorm:""`
 	Avatar          string    `gorm:"not null"`
 	ActiveToken     string    `gorm:""`
 	IsActive        bool      `gorm:"default:0"`
