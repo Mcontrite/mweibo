@@ -9,6 +9,50 @@
 <body>
     {{template "header.html" .}}
     This is Home of {{.message}} on {{.user.Username}}
+    <br>
+    <section>
+    {{range $k,$v:=.weibos}}
+        <div>
+            <span><a href="/weibo/{{$v.ID}}">
+                {{$v.Content}}
+            </a></span>
+            <span>{{$v.CreatedAt}}</span>
+        </div>
+        <div>
+            <tr>
+                {{range $tagkey,$tagvalue:=$v.Tags}}
+                <a href="/tag/{{$tagvalue.ID}}">
+                    # <span>{{$tagvalue.Content}}</span>
+                </a>
+                {{end}}
+            </tr>
+        </div>
+    <hr>
+    {{end}}
+    </section>
+
+    <div>
+        <ul>
+            {{range $tagkey,$tv:=.tags}}
+            <li><a href="/tag/{{$tv.ID}}">{{$tv.Content}}({{$tv.Num}})</a></li>
+            {{end}}
+        </ul>
+    </div>
+
+    <div>
+        <ul>
+        {{range $key,$v:=.maxViewWeibos}}
+            <li><a href="/weibo/{{$v.ID}}">{{$v.Content}}({{$v.ViewsCnt}})</a></li>
+        {{end}}
+        </ul>
+    </div>
+    <div>
+        <ul>
+        {{range $key,$v:=.maxCommentWeibos}}
+            <li><a href="/weibo/{{$v.ID}}">{{$v.Content}}({{$v.ViewsCnt}})</a></li>
+        {{end}}
+        </ul>
+    </div>
 </body>
 </html>
 {{end}}

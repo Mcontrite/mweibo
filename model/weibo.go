@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
 	"strconv"
 
@@ -41,6 +42,14 @@ func DeleteWeibo(weibo *Weibo) error {
 	return DB.Delete(weibo).Error
 }
 
+func (weibo *Weibo) DeleteWeiboByID(id int) error {
+	weibo.ID = uint(id)
+	if err := DB.Delete(&weibo).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func CountWeibos() (count int) {
 	DB.Model(&Weibo{}).Count(&count)
 	return
@@ -62,10 +71,9 @@ func CountWeibosByTag(tag string) (count int, err error) {
 	return
 }
 
-func GetWeiboByID(id interface{}) (*Weibo, error) {
-	weibo := &Weibo{}
-	err := DB.First(&weibo, id).Error
-	return weibo, err
+func GetWeiboByID(id interface{}) (weibo *Weibo, err error) {
+	err = DB.First(&weibo, id).Error
+	return
 }
 
 func GetWeiboByTagID(tag string) (count int, err error) {
@@ -132,4 +140,43 @@ func Excerpt(weibo *Weibo) template.HTML {
 	}
 	excerpt := template.HTML(sanitize + "...")
 	return excerpt
+}
+
+func GetUserWeibosCount(userid int) (count int, err error) {
+	err = DB.Model(&Weibo{}).Where("user_id=?", userid).Count(&count).Error
+	return
+}
+
+func ListUserWeibos(userid int) (weibos []*Weibo, err error) {
+	err = DB.Where("user_id=?", userid).Order("id desc").Find(&weibos).Error
+	if err != nil {
+		return nil, err
+	}
+	return weibos, err
+}
+
+func GetUsersWeibosCount(ids []uint) (count int, err error) {
+	sqlstr := "select count(*) from weibos where deleted_at is null and user_id in ("
+	for i, v := range ids {
+		sqlstr += strconv.Itoa(int(v))
+		if i < len(ids)-1 {
+			sqlstr += ","
+		}
+	}
+	sqlstr += ")"
+	err = DB.Raw(sqlstr).Count(&count).Error
+	return
+}
+
+func ListUsersWeibos(ids []uint, offset, limit int) (weibos []*Weibo, err error) {
+	sqlstr := "select * from weibos where deleted_at is null and user_id in ("
+	for i, v := range ids {
+		sqlstr += strconv.Itoa(int(v))
+		if i < len(ids)-1 {
+			sqlstr += ","
+		}
+	}
+	sqlstr += fmt.Sprintf(") order by `created_at` desc limit %d offset %d", limit, offset)
+	err = DB.Raw(sqlstr).Scan(&weibos).Error
+	return
 }

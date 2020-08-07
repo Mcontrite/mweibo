@@ -1,0 +1,53 @@
+{{define "weibo/display.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weibo Detail</title>
+</head>
+<body>
+    {{template "header.html" .}}
+    <tr th:each="tag : ${weibo.tags}">
+        {{range $k,$v := .weibo.Tags}}
+        <a href="/tag/{{$v.ID}}">
+            <span th:text="' ' + ${tag.content}"> {{$v.Content}}</span>
+        </a>
+        {{end}}
+    </tr>
+    <span>{{.weibo.CreatedAt}}</span>
+    <span>{{.weibo.ViewsCnt}}</span>
+    <div id="content">{{.weibo.Content}}</div>
+    <comment>
+        {{range .weibo.Comments}}
+        <div>
+            {{if .Avatar}}
+            <img src="{{.Avatar}}">
+            {{else}}
+            <img src="http://placehold.it/64x64">
+            {{end}}
+            <div>
+                <h4 class="media-heading"><small>{{.CreatedAt}}</small></h4>
+                {{.Content}}
+            </div>
+        </div>
+        {{end}}
+    </comment>
+    <div>
+    {{if not .user}}
+        <a href="/login">登录发表评论</a>
+    {{else}}
+    <form action="" method="post">
+        <input name="weiboid" type="hidden" value="{{.weibo.ID}}">
+        <div><textarea name="content"></textarea></div>
+        <div>
+            <div>验证码<input name="captcha_code"></div>
+            <div><img src="/captcha"/></div>
+        </div>
+        <div><button type="submit">评论</button></div>
+    </form>
+    {{end}}
+    </div>
+</body>
+</html>
+{{end}}

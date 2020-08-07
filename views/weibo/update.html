@@ -11,7 +11,7 @@
     <span id="tagBug">
         {{range $k,$v := .weibo.Tags}}
         <button>
-                <a href="/tag/{{$v.ID}}">{{$v.Name}}</a>
+                <a href="/tag/{{$v.ID}}">{{$v.Content}}</a>
                 <span>{{$v.ID}}</span>
         </button>&nbsp;
         {{end}}
