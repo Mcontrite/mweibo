@@ -49,15 +49,15 @@ func (user *User) DeleteUser(id int) error {
 	return nil
 }
 
-func GetUserByID(id int) (user *User, err error) {
-	err = DB.First(&user, id).Error
-	return
-}
-
-// func GetUserByID(id interface{}) (user *User, err error) {
+// func GetUserByID(id int) (user *User, err error) {
 // 	err = DB.First(&user, id).Error
 // 	return
 // }
+
+func GetUserByID(id interface{}) (user *User, err error) {
+	err = DB.First(&user, id).Error
+	return
+}
 
 func GetUserByWeiboID(weiboid int) (user *User, err error) {
 	weibo, _ := GetWeiboByID(weiboid)
