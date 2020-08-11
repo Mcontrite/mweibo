@@ -31,6 +31,9 @@ func main() {
 	defer db.Close()
 	g := router.InitRouter()
 	//g.Run(conf.GetConfiguration().ServerPort)
+	// str := fmt.Sprintf(":%d", conf.Serverconfig.ServerPort)
+	// fmt.Println(str)
+	// g.Run(str)
 	g.Run(":8080")
 }
 
