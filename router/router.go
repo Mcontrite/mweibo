@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func setSession(g *gin.Engine) {
+func setSession(e *gin.Engine) {
 	// config := conf.GetConfiguration()
 	// store := cookie.NewStore([]byte(config.SessionKey))
 	skey := "MWeiBoSession"
@@ -22,7 +22,7 @@ func setSession(g *gin.Engine) {
 		MaxAge:   7 * 24 * 60 * 60,
 		Path:     "/",
 	})
-	g.Use(sessions.Sessions("gin-session", store))
+	e.Use(sessions.Sessions("gin-session", store))
 }
 
 func setContext() gin.HandlerFunc {
@@ -33,16 +33,19 @@ func setContext() gin.HandlerFunc {
 			if err == nil {
 				c.Set(ctr.CONTEXT_USER_KEY, user)
 			}
+			// user, _ := model.GetUserByID(id)
+			// c.Set(ctr.CONTEXT_USER_KEY, user)
 		}
 		c.Next()
 	}
 }
 
-func setTemplate(g *gin.Engine) {
-	g.Static("/static", "static")
+// funcmap
+func setTemplate(e *gin.Engine) {
+	e.Static("/static", "static")
 	funcMap := template.FuncMap{}
-	g.SetFuncMap(funcMap)
-	g.LoadHTMLGlob("views/**/*")
+	e.SetFuncMap(funcMap)
+	e.LoadHTMLGlob("views/**/*")
 }
 
 func Auth() gin.HandlerFunc {
@@ -87,10 +90,10 @@ func GetCaptcha(c *gin.Context) {
 
 func InitRouter() *gin.Engine {
 	g := gin.Default()
-	setTemplate(g)
 	setSession(g)
+	setTemplate(g)
 	g.Use(setContext())
 	g.NoRoute(ctr.Handle404)
-	registerApis(g)
+	registerApi(g)
 	return g
 }

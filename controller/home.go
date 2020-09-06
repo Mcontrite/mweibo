@@ -23,6 +23,7 @@ func Home(c *gin.Context) {
 		return
 	}
 	policy := bluemonday.StrictPolicy()
+	// num,_:=model.GetWeiboByTagID("")
 	for _, v := range weibos {
 		v.Tags, _ = model.ListTagsByWeiboID(strconv.FormatUint(uint64(v.ID), 10))
 		v.Content = policy.Sanitize(string(blackfriday.Run([]byte(v.Content))))

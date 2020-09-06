@@ -9,7 +9,7 @@ import (
 type Tag struct {
 	gorm.Model
 	Content string
-	Num     int
+	Num     int // count
 }
 
 func CreateTag(tag *Tag) error {
@@ -22,13 +22,14 @@ func CountTags() (count int) {
 }
 
 func ListTags() (tags []*Tag, err error) {
-	rows, err := DB.Raw("select t.*, count(*) total from tags t inner join tag_weibos tw on " +
+	rows, err := DB.Raw("select t.*, count(*) num from tags t inner join tag_weibos tw on " +
 		"t.id=tw.tag_id inner join weibos w on tw.weibo_id=w.id group by tw.tag_id",
 	).Rows()
 	defer rows.Close()
 	for rows.Next() {
 		var tag Tag
 		DB.ScanRows(rows, &tag)
+		tags = append(tags, &tag)
 	}
 	return tags, nil
 }

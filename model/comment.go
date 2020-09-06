@@ -13,6 +13,7 @@ type Comment struct {
 	WeiboID uint
 	Content string
 	IsRead  bool `gorm:"default:0"`
+	// ImageURL
 }
 
 func CreateComment(comment *Comment) error {
@@ -64,5 +65,5 @@ func ListCommentsByWeiboID(weiboid string) (comments []*Comment, err error) {
 		DB.ScanRows(rows, &comment)
 		comments = append(comments, &comment)
 	}
-	return comments, err
+	return
 }

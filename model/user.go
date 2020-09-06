@@ -8,14 +8,14 @@ import (
 
 type User struct {
 	gorm.Model
-	Username        string    `gorm:"not null"`
-	Password        string    `gorm:"not null"`
-	Email           string    `gorm:""`
-	Avatar          string    `gorm:"not null"`
-	ActiveToken     string    `gorm:""`
-	IsActive        bool      `gorm:"default:0"`
-	IsAdmin         bool      `gorm:"default:1"`
-	EmailVertifyAt  time.Time `gorm:""`
+	Username    string `gorm:"not null"`
+	Password    string `gorm:"not null"`
+	Email       string `gorm:""`
+	Avatar      string `gorm:"not null"`
+	ActiveToken string `gorm:""`
+	IsActive    bool   `gorm:"default:0"`
+	IsAdmin     bool   `gorm:"default:1"`
+	// EmailVertifyAt  time.Time `gorm:""`
 	RememberMeToken string    `gorm:""`
 	SecretKey       string    `gorm:"default:null"`
 	ExpireTime      time.Time `gorm:"default:null"`
@@ -43,10 +43,7 @@ func UpdateUserEmail(user *User, email string) error {
 func (user *User) DeleteUser(id int) error {
 	user.ID = uint(id)
 	// Unscoped 永久删除
-	if err = DB.Unscoped().Delete(&user).Error; err != nil {
-		return err
-	}
-	return nil
+	return DB.Unscoped().Delete(&user).Error
 }
 
 // func GetUserByID(id int) (user *User, err error) {
@@ -59,6 +56,22 @@ func GetUserByID(id interface{}) (user *User, err error) {
 	return
 }
 
+// func GetUserByUsername(name string) (user *User, err error) {
+// 	err = DB.First(&user, "username=?", name).Error
+// 	return
+// }
+
+func GetUserByUsername(name string) (*User, error) {
+	var user User
+	err := DB.First(&user, "username=?", name).Error
+	return &user, err
+}
+
+func GetUserByEmail(email string) (user *User, err error) {
+	err = DB.First(&user, "email=?", email).Error
+	return
+}
+
 func GetUserByWeiboID(weiboid int) (user *User, err error) {
 	weibo, _ := GetWeiboByID(weiboid)
 	user, err = GetUserByID(int(weibo.UserID))
@@ -68,13 +81,8 @@ func GetUserByWeiboID(weiboid int) (user *User, err error) {
 	return user, err
 }
 
-func GetUserByUsername(name string) (user *User, err error) {
-	err = DB.First(&user, "username=?", name).Error
-	return
-}
-
-func GetUserByEmail(email string) (user *User, err error) {
-	err = DB.First(&user, "email=?", email).Error
+func CountUsers() (count int) {
+	DB.Model(&User{}).Count(&count)
 	return
 }
 

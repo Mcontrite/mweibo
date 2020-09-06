@@ -56,14 +56,13 @@ func CountWeibos() (count int) {
 }
 
 func CountWeibosByTag(tag string) (count int, err error) {
-	if len(tag) > 0 {
+	if tag != "" {
 		tagid, err := strconv.ParseUint(tag, 10, 64)
 		if err != nil {
 			log.Warnf("Parse tagid error...")
 		}
-		err = DB.Raw(
-			"select count(*) from weibos w inner join tag_weibos tw on w.id=tw.weibo_id where tw.tag_id=?",
-			tagid,
+		err = DB.Raw("select count(*) from weibos w inner join tag_weibos tw on "+
+			"w.id=tw.weibo_id where tw.tag_id=?", tagid,
 		).Row().Scan(&count)
 	} else {
 		err = DB.Raw("select count(*) from weibos").Row().Scan(&count)
@@ -73,11 +72,12 @@ func CountWeibosByTag(tag string) (count int, err error) {
 
 func GetWeiboByID(id interface{}) (weibo *Weibo, err error) {
 	err = DB.First(&weibo, id).Error
+	// err = DB.First(&weibo,"id=?", id).Error
 	return
 }
 
 func GetWeiboByTagID(tag string) (count int, err error) {
-	if len(tag) > 0 {
+	if tag != "" {
 		tagid, _ := strconv.ParseUint(tag, 10, 64)
 		err = DB.Raw(
 			"select count(*) from weibos w inner join tag_weibos tw on w.id=tw.weibo_id "+

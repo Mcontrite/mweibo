@@ -8,7 +8,10 @@
 </head>
 <body>
     {{template "header.html" .}}
+    Welcome To Mweibo
+    {{if .user}}
     This is Home of {{.message}} on {{.user.Username}}
+    {{end}}
     <br>
     <section>
     {{range $k,$v:=.weibos}}

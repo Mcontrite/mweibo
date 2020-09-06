@@ -31,7 +31,7 @@ type DBConfig struct {
 	DSN        string
 }
 
-var dbconfig = &DBConfig{}
+var DBconfig = &DBConfig{}
 
 type MailConfig struct {
 	MailDriver   string
@@ -42,7 +42,7 @@ type MailConfig struct {
 	MailSender   string
 }
 
-var mailconfig = &MailConfig{}
+var Mailconfig = &MailConfig{}
 
 func InitConfig() {
 	// cfg, err := ini.Load("conf/config.ini")
@@ -55,6 +55,6 @@ func InitConfig() {
 	if err != nil {
 		return
 	}
-	err = cfg.Section("DB").MapTo(dbconfig)
-	err = cfg.Section("MAIL").MapTo(mailconfig)
+	err = cfg.Section("DB").MapTo(DBconfig)
+	err = cfg.Section("MAIL").MapTo(Mailconfig)
 }

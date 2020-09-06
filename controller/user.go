@@ -97,7 +97,7 @@ func UpdateUserAvatar(c *gin.Context) {
 		return
 	}
 	user := new(model.User)
-	user, ok = ctxuser.(*model.User)
+	user, ok = ctxuser.(*model.User) // 接口类型转换为实体类型
 	err := model.UpdateUserAvatar(user, avatarurl)
 	if err != nil {
 		res["message"] = "Update avatar error " + err.Error()
@@ -120,7 +120,7 @@ func BindUserEmail(c *gin.Context) {
 	}
 	user, _ := ctxuser.(*model.User)
 	if len(user.Email) > 0 {
-		res["message"] = "Email is null"
+		res["message"] = "Email can't be null"
 		return
 	}
 	err := model.UpdateUserEmail(user, email)
@@ -140,7 +140,7 @@ func UnbindUserEmail(c *gin.Context) {
 		return
 	}
 	user, _ := ctxuser.(*model.User)
-	if len(user.Email) > 0 {
+	if user.Email == "" {
 		res["message"] = "Email is null"
 		return
 	}

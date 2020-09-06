@@ -6,20 +6,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func registerApis(g *gin.Engine) {
-	g.GET("/", ctr.Home)
-	g.GET("/captcha", GetCaptcha)
+func registerApi(e *gin.Engine) {
+	e.GET("/", ctr.Home)
+	e.GET("/captcha", GetCaptcha)
 
-	g.GET("/register", ctr.RegisterGet)
-	g.POST("/register", ctr.RegisterPost)
-	g.GET("/login", ctr.LoginGet)
-	g.POST("/login", ctr.LoginPost)
-	g.GET("/logout", ctr.Logout)
+	e.GET("/register", ctr.RegisterGet)
+	e.POST("/register", ctr.RegisterPost)
+	e.GET("/login", ctr.LoginGet)
+	e.POST("/login", ctr.LoginPost)
+	e.GET("/logout", ctr.Logout)
 
-	g.GET("weibo/:id", ctr.DisplayWeibo)
-	g.GET("tag/:tag", ctr.DisplayTag)
+	e.GET("weibo/:id", ctr.DisplayWeibo)
+	e.GET("tag/:tag", ctr.DisplayTag)
 
-	auth := g.Group("/auth")
+	auth := e.Group("/auth")
 	auth.Use(Auth())
 	{
 		auth.PUT("/user", ctr.UpdateUserAvatar)
@@ -37,7 +37,7 @@ func registerApis(g *gin.Engine) {
 
 		auth.POST("/tag", ctr.CreateTag)
 	}
-	admin := g.Group("/admin")
+	admin := e.Group("/admin")
 	admin.Use(Admin())
 	{
 		admin.GET("/users", ctr.ListUsers)
