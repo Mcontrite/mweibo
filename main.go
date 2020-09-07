@@ -1,23 +1,22 @@
 package main
 
 import (
-	"flag"
+	"fmt"
 	"mweibo/conf"
 	"mweibo/model"
 	"mweibo/router"
-
-	"github.com/lexkong/log"
 )
 
 func main() {
-	configpath := flag.String("C", "conf/config.yaml", "Config File Path")
-	flag.Parse()
-	conf.InitLog()
-	err := conf.LoadConfiguration(*configpath)
-	if err != nil {
-		log.Fatal("Read config file error: ", err)
-		panic("Read config file error...")
-	}
+	// configpath := flag.String("C", "conf/config.yaml", "Config File Path")
+	// flag.Parse()
+	// conf.InitLog()
+	// err := conf.LoadConfiguration(*configpath)
+	// if err != nil {
+	// 	log.Fatal("Read config file error: ", err)
+	// 	panic("Read config file error...")
+	// }
+	conf.InitConfig()
 	db := model.InitDB()
 	db.AutoMigrate(
 		&model.User{},
@@ -31,10 +30,9 @@ func main() {
 	defer db.Close()
 	g := router.InitRouter()
 	//g.Run(conf.GetConfiguration().ServerPort)
-	// str := fmt.Sprintf(":%d", conf.Serverconfig.ServerPort)
-	// fmt.Println(str)
-	// g.Run(str)
-	g.Run(":8080")
+
+	g.Run(fmt.Sprintf(":%d", conf.Serverconfig.ServerPort))
+	//g.Run(":8080")
 }
 
 // log mail csrf passwordreset pagination

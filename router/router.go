@@ -1,17 +1,22 @@
 package router
 
 import (
+	"fmt"
 	"html/template"
 	ctr "mweibo/controller"
+	"mweibo/middleware"
 	"mweibo/model"
 	"net/http"
+	"strings"
 
-	"github.com/dchest/captcha"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
+	limit "github.com/aviddiviner/gin-limit"
+
+	//"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	sessions "github.com/tommy351/gin-sessions"
 )
 
+<<<<<<< HEAD
 func setSession(e *gin.Engine) {
 	// config := conf.GetConfiguration()
 	// store := cookie.NewStore([]byte(config.SessionKey))
@@ -46,6 +51,88 @@ func setTemplate(e *gin.Engine) {
 	funcMap := template.FuncMap{}
 	e.SetFuncMap(funcMap)
 	e.LoadHTMLGlob("views/**/*")
+=======
+// func InitRouter() *gin.Engine {
+// 	g := gin.Default()
+// 	setSession(g)
+// 	setTemplate(g)
+// 	g.Use(setContext())
+// 	g.NoRoute(ctr.Handle404)
+// 	registerApi(g)
+// 	return g
+// }
+
+func InitRouter() *gin.Engine {
+	g := gin.New()
+	//gin.SetMode(conf.ServerConfig.RunMode)
+	gin.SetMode("debug")
+	setMiddleware(g)
+	setSession(g)
+	setTemplate(g)
+
+	//g.Use(setContext())
+	g.NoRoute(ctr.Handle404)
+	registerApi(g)
+	return g
+}
+
+// func setSession(e *gin.Engine) {
+// 	// config := conf.GetConfiguration()
+// 	// store := cookie.NewStore([]byte(config.SessionKey))
+// 	skey := "MWeiBoSession"
+// 	store := cookie.NewStore([]byte(skey))
+// 	store.Options(sessions.Options{
+// 		HttpOnly: true,
+// 		MaxAge:   7 * 24 * 60 * 60,
+// 		Path:     "/",
+// 	})
+// 	e.Use(sessions.Sessions("gin-session", store))
+// }
+
+func setMiddleware(g *gin.Engine) {
+	g.Use(gin.Logger())
+	g.Use(gin.Recovery())
+	g.Use(Cors())
+	g.Use(limit.MaxAllowed(100))
+	g.Use(middleware.LoggerToFile())
+}
+
+func setSession(g *gin.Engine) {
+	store := sessions.NewCookieStore([]byte("MWeiBoSession"))
+	g.Use(sessions.Middleware("mweibo_session", store))
+}
+
+// func setContext() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		session := sessions.Default(c)
+// 		if id := session.Get(ctr.SESSION_KEY); id != nil {
+// 			user, err := model.GetUserByID(id)
+// 			if err == nil {
+// 				c.Set(ctr.CONTEXT_USER_KEY, user)
+// 			}
+// 			// user, _ := model.GetUserByID(id)
+// 			// c.Set(ctr.CONTEXT_USER_KEY, user)
+// 		}
+// 		c.Next()
+// 	}
+// }
+
+// funcmap
+// func setTemplate(e *gin.Engine) {
+// 	e.Static("/static", "static")
+// 	funcMap := template.FuncMap{}
+// 	e.SetFuncMap(funcMap)
+// 	e.LoadHTMLGlob("views/**/*")
+// }
+
+func setTemplate(g *gin.Engine) {
+	funcMap := template.FuncMap{}
+	g.SetFuncMap(funcMap)
+	g.StaticFS("/static", http.Dir("./static"))
+	g.StaticFS("/upload", http.Dir("./upload"))
+	//g.LoadHTMLGlob("views/*/**/***")
+	g.LoadHTMLGlob("views/**/*")
+>>>>>>> 4f21432... fix ini-config
 }
 
 func Auth() gin.HandlerFunc {
@@ -79,15 +166,16 @@ func Admin() gin.HandlerFunc {
 	}
 }
 
-func GetCaptcha(c *gin.Context) {
-	session := sessions.Default(c)
-	data := captcha.NewLen(4)
-	session.Delete(ctr.SESSION_CAPTCHA)
-	session.Set(ctr.SESSION_CAPTCHA, data)
-	session.Save()
-	captcha.WriteImage(c.Writer, data, 100, 40)
-}
+// func GetCaptcha(c *gin.Context) {
+// 	session := sessions.Default(c)
+// 	data := captcha.NewLen(4)
+// 	session.Delete(ctr.SESSION_CAPTCHA)
+// 	session.Set(ctr.SESSION_CAPTCHA, data)
+// 	session.Save()
+// 	captcha.WriteImage(c.Writer, data, 100, 40)
+// }
 
+<<<<<<< HEAD
 func InitRouter() *gin.Engine {
 	g := gin.Default()
 	setSession(g)
@@ -96,4 +184,33 @@ func InitRouter() *gin.Engine {
 	g.NoRoute(ctr.Handle404)
 	registerApi(g)
 	return g
+=======
+func Cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		method := c.Request.Method
+		origin := c.Request.Header.Get("Origin")
+		var headerKeys []string
+		for k, _ := range c.Request.Header {
+			headerKeys = append(headerKeys, k)
+		}
+		headerStr := strings.Join(headerKeys, ", ")
+		if headerStr != "" {
+			headerStr = fmt.Sprintf("access-control-allow-origin, access-control-allow-headers, %s", headerStr)
+		} else {
+			headerStr = "access-control-allow-origin, access-control-allow-headers"
+		}
+		if origin != "" {
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Headers", headerStr)
+			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+			c.Header("Access-Control-Allow-Credentials", "true")
+			c.Set("content-type", "application/json")
+		}
+		if method == "OPTIONS" {
+			c.JSON(http.StatusOK, "Options Request!")
+		}
+		c.Next()
+	}
+>>>>>>> 4f21432... fix ini-config
 }

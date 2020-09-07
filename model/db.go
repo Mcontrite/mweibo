@@ -2,9 +2,9 @@ package model
 
 import (
 	"fmt"
+	"log"
+	"mweibo/conf"
 	"time"
-
-	"github.com/lexkong/log"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -15,7 +15,8 @@ import (
 // }
 
 var DB *gorm.DB
-var err error
+
+//var err error
 
 func createDBUrl(user, pwd, host, port, dbname string) string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true&loc=Local",
@@ -33,12 +34,30 @@ func InitDB() *gorm.DB {
 	// url := createDBUrl(user, pwd, host, port, dbname)
 	// db, err := gorm.Open(dbtype, url)
 	// db, err := gorm.Open(conf.GetConfiguration().DBType, conf.GetConfiguration().DSN)
-	str := "root:123456@tcp(127.0.0.1:3306)/mweibo?charset=utf8&parseTime=True&loc=Local"
-	db, err := gorm.Open("mysql", str)
+
+	dbtype := conf.DBconfig.DBType
+	dbuser := conf.DBconfig.DBUser
+	dbpassword := conf.DBconfig.DBPassword
+	dbhost := conf.DBconfig.DBHost
+	dbport := conf.DBconfig.DBPort
+	dbname := conf.DBconfig.DBName
+	dburl := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		dbuser, dbpassword, dbhost, dbport, dbname,
+	)
+	db, err := gorm.Open(dbtype, dburl)
 	if err != nil {
+		//log.Println(err)
 		log.Fatal("Connect database  failed: ", err)
 		panic("Connect database  failed...")
 	}
+
+	// str := "root:123456@tcp(127.0.0.1:3306)/mweibo?charset=utf8&parseTime=True&loc=Local"
+	// db, err := gorm.Open("mysql", str)
+	// if err != nil {
+	// 	log.Fatal("Connect database  failed: ", err)
+	// 	panic("Connect database  failed...")
+	// }
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(50)
 	db.DB().SetConnMaxLifetime(5 * time.Minute)

@@ -4,31 +4,13 @@ import (
 	"github.com/go-ini/ini"
 )
 
-type ServerConfig struct {
-	ServerName     string
-	ServerRunmode  string
-	ServerPort     int
-	ServerURL      string
-	ServerKey      string
-	SessionKey     string
-	ContextUserKey string
-	StaticPath     string
-	ViewsPath      string
-	EnableCsrf     bool
-	CsrfParamName  string
-	CsrfHeaderName string
-}
-
-var Serverconfig = &ServerConfig{}
-
 type DBConfig struct {
 	DBType     string
+	DBUser     string
+	DBPassword string
 	DBHost     string
 	DBPort     string
 	DBName     string
-	DBUser     string
-	DBPassword string
-	DSN        string
 }
 
 var DBconfig = &DBConfig{}
@@ -43,12 +25,29 @@ type MailConfig struct {
 }
 
 var Mailconfig = &MailConfig{}
+<<<<<<< HEAD
+=======
+
+type ServerConfig struct {
+	ServerName     string
+	ServerRunmode  string
+	ServerPort     int
+	ServerURL      string
+	ServerKey      string
+	SessionKey     string
+	ContextUserKey string
+	StaticPath     string
+	ViewsPath      string
+	EnableCsrf     bool
+	CsrfParamName  string
+	CsrfHeaderName string
+	JWTSecretKey   string
+}
+
+var Serverconfig = &ServerConfig{}
+>>>>>>> 4f21432... fix ini-config
 
 func InitConfig() {
-	// cfg, err := ini.Load("conf/config.ini")
-	// if err != nil {
-	// 	return
-	// }
 	var cfg *ini.File
 	cfg, _ = ini.Load("conf/config.ini")
 	err := cfg.Section("SERVER").MapTo(Serverconfig)

@@ -1,0 +1,13 @@
+{"client_ip":"127.0.0.1","latency_time":61280800,"level":"info","msg":"","req_method":"GET","req_uri":"/","status_code":200,"time":"2020-09-07 19:14:18"}
+{"client_ip":"127.0.0.1","latency_time":2981100,"level":"info","msg":"","req_method":"GET","req_uri":"/favicon.ico","status_code":404,"time":"2020-09-07 19:14:20"}
+{"client_ip":"127.0.0.1","latency_time":40987600,"level":"info","msg":"","req_method":"GET","req_uri":"/","status_code":200,"time":"2020-09-07 21:45:57"}
+{"client_ip":"127.0.0.1","latency_time":6995800,"level":"info","msg":"","req_method":"GET","req_uri":"/favicon.ico","status_code":404,"time":"2020-09-07 21:45:57"}
+{"client_ip":"127.0.0.1","latency_time":5992400,"level":"info","msg":"","req_method":"GET","req_uri":"/","status_code":200,"time":"2020-09-07 21:47:00"}
+{"client_ip":"127.0.0.1","latency_time":28984600,"level":"info","msg":"","req_method":"GET","req_uri":"/","status_code":200,"time":"2020-09-07 21:48:50"}
+{"client_ip":"127.0.0.1","latency_time":0,"level":"info","msg":"","req_method":"GET","req_uri":"/logout","status_code":200,"time":"2020-09-07 21:48:52"}
+{"client_ip":"127.0.0.1","latency_time":6989900,"level":"info","msg":"","req_method":"GET","req_uri":"/","status_code":200,"time":"2020-09-07 21:48:55"}
+{"client_ip":"127.0.0.1","latency_time":3997700,"level":"info","msg":"","req_method":"GET","req_uri":"/login","status_code":200,"time":"2020-09-07 21:48:58"}
+{"client_ip":"127.0.0.1","latency_time":2997200,"level":"info","msg":"","req_method":"POST","req_uri":"/login","status_code":200,"time":"2020-09-07 21:49:06"}
+{"client_ip":"127.0.0.1","latency_time":6994900,"level":"info","msg":"","req_method":"GET","req_uri":"/","status_code":200,"time":"2020-09-07 21:49:10"}
+{"client_ip":"127.0.0.1","latency_time":0,"level":"info","msg":"","req_method":"GET","req_uri":"/logout","status_code":200,"time":"2020-09-07 21:49:15"}
+{"client_ip":"127.0.0.1","latency_time":10995200,"level":"info","msg":"","req_method":"GET","req_uri":"/","status_code":200,"time":"2020-09-07 21:49:18"}

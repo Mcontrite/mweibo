@@ -23,6 +23,15 @@
             <li><a href="/register">注册</a></li>
             ??
             {{end}}
+
+            {{if .islogin}}
+            <li><a href="/my_favorite.html">个人中心</a></li>
+            <li class="active"><a href="/my.html">{{.sessions.Username}}</a></li>
+            
+            <li><a id="logout" href="/logout">退出</a></li>
+            {{else}}
+            <li><a href="/login">登录/注册</a></li>
+            {{end}}
         </ul>
     </div>
 </nav>

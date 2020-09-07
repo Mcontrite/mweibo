@@ -1,0 +1,13 @@
+time="2020-09-07T19:14:18+08:00" level=info client_ip=127.0.0.1 latency_time=61.2808ms req_method=GET req_uri=/ status_code=200
+time="2020-09-07T19:14:20+08:00" level=info client_ip=127.0.0.1 latency_time=2.9811ms req_method=GET req_uri=/favicon.ico status_code=404
+time="2020-09-07T21:45:57+08:00" level=info client_ip=127.0.0.1 latency_time=40.9876ms req_method=GET req_uri=/ status_code=200
+time="2020-09-07T21:45:57+08:00" level=info client_ip=127.0.0.1 latency_time=6.9958ms req_method=GET req_uri=/favicon.ico status_code=404
+time="2020-09-07T21:47:00+08:00" level=info client_ip=127.0.0.1 latency_time=5.9924ms req_method=GET req_uri=/ status_code=200
+time="2020-09-07T21:48:50+08:00" level=info client_ip=127.0.0.1 latency_time=28.9846ms req_method=GET req_uri=/ status_code=200
+time="2020-09-07T21:48:52+08:00" level=info client_ip=127.0.0.1 latency_time=0s req_method=GET req_uri=/logout status_code=200
+time="2020-09-07T21:48:55+08:00" level=info client_ip=127.0.0.1 latency_time=6.9899ms req_method=GET req_uri=/ status_code=200
+time="2020-09-07T21:48:58+08:00" level=info client_ip=127.0.0.1 latency_time=3.9977ms req_method=GET req_uri=/login status_code=200
+time="2020-09-07T21:49:06+08:00" level=info client_ip=127.0.0.1 latency_time=2.9972ms req_method=POST req_uri=/login status_code=200
+time="2020-09-07T21:49:10+08:00" level=info client_ip=127.0.0.1 latency_time=6.9949ms req_method=GET req_uri=/ status_code=200
+time="2020-09-07T21:49:15+08:00" level=info client_ip=127.0.0.1 latency_time=0s req_method=GET req_uri=/logout status_code=200
+time="2020-09-07T21:49:18+08:00" level=info client_ip=127.0.0.1 latency_time=10.9952ms req_method=GET req_uri=/ status_code=200

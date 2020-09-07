@@ -2,11 +2,14 @@ package router
 
 import (
 	ctr "mweibo/controller"
+	ctrget "mweibo/controller/get"
+	ctrpost "mweibo/controller/post"
 
 	"github.com/gin-gonic/gin"
 )
 
 func registerApi(e *gin.Engine) {
+<<<<<<< HEAD
 	e.GET("/", ctr.Home)
 	e.GET("/captcha", GetCaptcha)
 
@@ -15,6 +18,18 @@ func registerApi(e *gin.Engine) {
 	e.GET("/login", ctr.LoginGet)
 	e.POST("/login", ctr.LoginPost)
 	e.GET("/logout", ctr.Logout)
+=======
+	e.GET("/", ctrget.Home)
+	//e.GET("/captcha", GetCaptcha)
+
+	e.GET("/register", ctr.RegisterGet)
+	e.POST("/register", ctr.RegisterPost)
+	// e.GET("/login", ctr.LoginGet)
+	// e.POST("/login", ctr.LoginPost)
+	e.GET("/login", ctrget.LoginGET)
+	e.POST("/login", ctrpost.LoginPOST)
+	e.GET("/logout", ctrget.LogoutGET)
+>>>>>>> 4f21432... fix ini-config
 
 	e.GET("weibo/:id", ctr.DisplayWeibo)
 	e.GET("tag/:tag", ctr.DisplayTag)
