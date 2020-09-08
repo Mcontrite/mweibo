@@ -2,7 +2,7 @@ package get
 
 import (
 	"mweibo/model"
-	"mweibo/service"
+	userservice "mweibo/service/user"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,8 +10,8 @@ import (
 
 func Home(c *gin.Context) {
 	weiboList, _ := model.ListWeibos("")
-	islogin := service.IsLogin(c)
-	sessions := service.GetSessions(c)
+	islogin := userservice.IsLogin(c)
+	sessions := userservice.GetSessions(c)
 	weibosNum := model.CountWeibos()
 	usersNum := model.CountUsers()
 	c.HTML(http.StatusOK, "home/home.html", gin.H{

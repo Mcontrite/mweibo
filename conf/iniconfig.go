@@ -1,6 +1,8 @@
 package conf
 
 import (
+	"time"
+
 	"github.com/go-ini/ini"
 )
 
@@ -15,6 +17,16 @@ type DBConfig struct {
 
 var DBconfig = &DBConfig{}
 
+type RedisConfig struct {
+	RedisHost        string
+	RedisPassword    string
+	RedisMaxidle     int
+	RedisMaxActive   int
+	RedisIdleTimeout time.Duration
+}
+
+var Redisconfig = &RedisConfig{}
+
 type MailConfig struct {
 	MailDriver   string
 	MailHost     string
@@ -25,8 +37,6 @@ type MailConfig struct {
 }
 
 var Mailconfig = &MailConfig{}
-<<<<<<< HEAD
-=======
 
 type ServerConfig struct {
 	ServerName     string
@@ -45,7 +55,6 @@ type ServerConfig struct {
 }
 
 var Serverconfig = &ServerConfig{}
->>>>>>> 4f21432... fix ini-config
 
 func InitConfig() {
 	var cfg *ini.File
@@ -55,5 +64,6 @@ func InitConfig() {
 		return
 	}
 	err = cfg.Section("DB").MapTo(DBconfig)
+	err = cfg.Section("REDIS").MapTo(Redisconfig)
 	err = cfg.Section("MAIL").MapTo(Mailconfig)
 }

@@ -58,6 +58,8 @@ func InitDB() *gorm.DB {
 	// 	log.Fatal("Connect database  failed: ", err)
 	// 	panic("Connect database  failed...")
 	// }
+
+	// db.SingularTable(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(50)
 	db.DB().SetConnMaxLifetime(5 * time.Minute)

@@ -1,16 +1,16 @@
 package get
 
 import (
-	"mweibo/pkgs"
-	"mweibo/service"
+	userservice "mweibo/service/user"
+	"mweibo/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterGET(c *gin.Context) {
-	islogin := service.IsLogin(c)
-	sessions := service.GetSessions(c)
+	islogin := userservice.IsLogin(c)
+	sessions := userservice.GetSessions(c)
 	c.HTML(http.StatusOK, "register.html", gin.H{
 		"title":    "用户注册",
 		"islogin":  islogin,
@@ -19,8 +19,8 @@ func RegisterGET(c *gin.Context) {
 }
 
 func LoginGET(c *gin.Context) {
-	islogin := service.IsLogin(c)
-	sessions := service.GetSessions(c)
+	islogin := userservice.IsLogin(c)
+	sessions := userservice.GetSessions(c)
 	c.HTML(http.StatusOK, "user/login.html", gin.H{
 		"title":    "Home Page",
 		"islogin":  islogin,
@@ -29,7 +29,7 @@ func LoginGET(c *gin.Context) {
 }
 
 func LogoutGET(c *gin.Context) {
-	code := pkgs.SUCCESS
-	service.LogoutSession(c)
-	pkgs.ResponseJSONError(c, code)
+	code := utils.SUCCESS
+	userservice.LogoutSession(c)
+	utils.ResponseJSONError(c, code)
 }

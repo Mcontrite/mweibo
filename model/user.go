@@ -23,6 +23,7 @@ type User struct {
 
 func CreateUser(user *User) error {
 	return DB.Save(user).Error
+	// return DB.Create(user).Error
 }
 
 // func (user *User) CreateUser() error {
@@ -48,13 +49,11 @@ func (user *User) DeleteUser(id int) error {
 	user.ID = uint(id)
 	// Unscoped 永久删除
 	return DB.Unscoped().Delete(&user).Error
-<<<<<<< HEAD
-=======
 }
+
 func DelUser(maps interface{}) (err error) {
 	err = DB.Unscoped().Where(maps).Delete(&User{}).Error
 	return
->>>>>>> 4f21432... fix ini-config
 }
 
 // func GetUserByID(id int) (user *User, err error) {
@@ -80,40 +79,6 @@ func GetUser(maps interface{}) (user User, err error) {
 	return
 }
 
-<<<<<<< HEAD
-// func GetUserByUsername(name string) (user *User, err error) {
-// 	err = DB.First(&user, "username=?", name).Error
-// 	return
-// }
-
-func GetUserByUsername(name string) (*User, error) {
-	var user User
-	err := DB.First(&user, "username=?", name).Error
-	return &user, err
-}
-
-func GetUserByEmail(email string) (user *User, err error) {
-	err = DB.First(&user, "email=?", email).Error
-	return
-}
-
-func GetUserByWeiboID(weiboid int) (user *User, err error) {
-	weibo, _ := GetWeiboByID(weiboid)
-	user, err = GetUserByID(int(weibo.UserID))
-	if err != nil {
-		return nil, err
-	}
-	return user, err
-}
-
-func CountUsers() (count int) {
-	DB.Model(&User{}).Count(&count)
-=======
-func GetUsers(limit int, order string, maps interface{}) (user []User, err error) {
-	err = DB.Model(&User{}).Order(order).Limit(limit).Find(&user).Error
-	return
-}
-
 func GetUserByID(id int) (user User, err error) {
 	err = DB.Model(&User{}).Where("id=?", id).First(&user).Error
 	return
@@ -132,7 +97,6 @@ func GetUserByUsername(name string) (*User, error) {
 
 func GetUserByEmail(email string) (user *User, err error) {
 	err = DB.First(&user, "email=?", email).Error
->>>>>>> 4f21432... fix ini-config
 	return
 }
 
@@ -152,6 +116,11 @@ func CountUsers() (count int) {
 
 func ListUsers() (users []*User, err error) {
 	err = DB.Find(&users, "is_admin=?", true).Error
+	return
+}
+
+func GetUsers(limit int, order string, maps interface{}) (user []User, err error) {
+	err = DB.Model(&User{}).Order(order).Limit(limit).Find(&user).Error
 	return
 }
 

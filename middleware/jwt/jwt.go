@@ -1,10 +1,12 @@
-package utils
+package jwt
 
 import (
 	"mweibo/conf"
+	"mweibo/utils"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 var jwtSecret = []byte(conf.Serverconfig.JWTSecretKey)
@@ -23,7 +25,7 @@ func GenerateToken(username, password string) (string, time.Time, error) {
 		password,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
-			Issuer:    "myzone",
+			Issuer:    "mweibo",
 		},
 	}
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -55,4 +57,29 @@ func RefreshToken(token string) (string, time.Time, error) {
 		}
 	}
 	return "", time.Now(), nil
+}
+
+func JWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var code int
+		code = utils.SUCCESS
+		token := c.Query("token")
+		if token == "" {
+			code = utils.INVALID_PARAMS
+			c.Redirect(301, "/admin/login.html")
+			return
+		} else {
+			claims, err := ParseToken(token)
+			if err != nil {
+				code = utils.ERROR_AUTH_CHECK_TOKEN_FAIL
+			} else if time.Now().Unix() > claims.ExpiresAt {
+				code = utils.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
+			}
+		}
+		if code != utils.SUCCESS {
+			c.Redirect(301, "/admin/login.html")
+			return
+		}
+		c.Next()
+	}
 }

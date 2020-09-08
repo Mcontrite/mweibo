@@ -1,4 +1,4 @@
-package pkgs
+package utils
 
 const (
 	SUCCESS        = 200

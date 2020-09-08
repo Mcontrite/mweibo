@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"html/template"
 	ctr "mweibo/controller"
-	"mweibo/middleware"
-	"mweibo/model"
+	"mweibo/middleware/logger"
+	"mweibo/utils"
 	"net/http"
 	"strings"
+
+	"mweibo/middleware/redis"
 
 	limit "github.com/aviddiviner/gin-limit"
 
@@ -16,42 +18,6 @@ import (
 	sessions "github.com/tommy351/gin-sessions"
 )
 
-<<<<<<< HEAD
-func setSession(e *gin.Engine) {
-	// config := conf.GetConfiguration()
-	// store := cookie.NewStore([]byte(config.SessionKey))
-	skey := "MWeiBoSession"
-	store := cookie.NewStore([]byte(skey))
-	store.Options(sessions.Options{
-		HttpOnly: true,
-		MaxAge:   7 * 24 * 60 * 60,
-		Path:     "/",
-	})
-	e.Use(sessions.Sessions("gin-session", store))
-}
-
-func setContext() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		if id := session.Get(ctr.SESSION_KEY); id != nil {
-			user, err := model.GetUserByID(id)
-			if err == nil {
-				c.Set(ctr.CONTEXT_USER_KEY, user)
-			}
-			// user, _ := model.GetUserByID(id)
-			// c.Set(ctr.CONTEXT_USER_KEY, user)
-		}
-		c.Next()
-	}
-}
-
-// funcmap
-func setTemplate(e *gin.Engine) {
-	e.Static("/static", "static")
-	funcMap := template.FuncMap{}
-	e.SetFuncMap(funcMap)
-	e.LoadHTMLGlob("views/**/*")
-=======
 // func InitRouter() *gin.Engine {
 // 	g := gin.Default()
 // 	setSession(g)
@@ -94,7 +60,7 @@ func setMiddleware(g *gin.Engine) {
 	g.Use(gin.Recovery())
 	g.Use(Cors())
 	g.Use(limit.MaxAllowed(100))
-	g.Use(middleware.LoggerToFile())
+	g.Use(logger.LoggerToFile())
 }
 
 func setSession(g *gin.Engine) {
@@ -132,39 +98,58 @@ func setTemplate(g *gin.Engine) {
 	g.StaticFS("/upload", http.Dir("./upload"))
 	//g.LoadHTMLGlob("views/*/**/***")
 	g.LoadHTMLGlob("views/**/*")
->>>>>>> 4f21432... fix ini-config
 }
+
+// func Auth() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		if user, _ := c.Get(ctr.CONTEXT_USER_KEY); user != nil {
+// 			if _, ok := user.(*model.User); ok {
+// 				c.Next()
+// 				return
+// 			}
+// 		}
+// 		c.HTML(http.StatusForbidden, "error/error.html", gin.H{
+// 			"message": "You need to login !",
+// 		})
+// 		c.Abort()
+// 	}
+// }
 
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if user, _ := c.Get(ctr.CONTEXT_USER_KEY); user != nil {
-			if _, ok := user.(*model.User); ok {
-				c.Next()
-				return
-			}
+		if utils.GetSession(c, "islogin") != "1" {
+			c.Redirect(301, "/login")
+			return
 		}
-		c.HTML(http.StatusForbidden, "error/error.html", gin.H{
-			"message": "You need to login !",
-		})
-		c.Abort()
+		c.Next()
 	}
 }
 
 func Admin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if user, _ := c.Get(ctr.CONTEXT_USER_KEY); user != nil {
-			u, ok := user.(*model.User)
-			if ok && u.IsAdmin {
-				c.Next()
-				return
-			}
+		if utils.GetSession(c, "isadmin") != "1" {
+			c.Redirect(301, "/")
+			return
 		}
-		c.HTML(http.StatusForbidden, "error/error.html", gin.H{
-			"message": "You are not administrator !",
-		})
-		c.Abort()
+		c.Next()
 	}
 }
+
+// func Admin() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		if user, _ := c.Get(ctr.CONTEXT_USER_KEY); user != nil {
+// 			u, ok := user.(*model.User)
+// 			if ok && u.IsAdmin {
+// 				c.Next()
+// 				return
+// 			}
+// 		}
+// 		c.HTML(http.StatusForbidden, "error/error.html", gin.H{
+// 			"message": "You are not administrator !",
+// 		})
+// 		c.Abort()
+// 	}
+// }
 
 // func GetCaptcha(c *gin.Context) {
 // 	session := sessions.Default(c)
@@ -175,16 +160,6 @@ func Admin() gin.HandlerFunc {
 // 	captcha.WriteImage(c.Writer, data, 100, 40)
 // }
 
-<<<<<<< HEAD
-func InitRouter() *gin.Engine {
-	g := gin.Default()
-	setSession(g)
-	setTemplate(g)
-	g.Use(setContext())
-	g.NoRoute(ctr.Handle404)
-	registerApi(g)
-	return g
-=======
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
@@ -212,5 +187,29 @@ func Cors() gin.HandlerFunc {
 		}
 		c.Next()
 	}
->>>>>>> 4f21432... fix ini-config
+}
+
+func XSS() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		xssToken := c.DefaultPostForm("xss_token", "")
+		if len(xssToken) == 0 {
+			c.JSON(200, gin.H{
+				"code":    401,
+				"message": "请提交xsstoken",
+			})
+			c.Abort()
+			return
+		}
+		_, err := redis.Get(xssToken)
+		if err == nil {
+			c.JSON(200, gin.H{
+				"code":    403,
+				"message": "已经提交过了，不要重复提交",
+			})
+			c.Abort()
+			return
+		}
+		redis.Set(xssToken, xssToken, 100)
+		c.Next()
+	}
 }
