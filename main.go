@@ -37,4 +37,5 @@ func main() {
 
 // log mail csrf passwordreset pagination
 // group image upload attach favorite ip
-// myweibos captcha
+// myweibos captcha auth admin
+// ROUTE tips

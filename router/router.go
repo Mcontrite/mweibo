@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"strings"
 
-	"mweibo/middleware/redis"
-
 	limit "github.com/aviddiviner/gin-limit"
 
 	//"github.com/gin-contrib/sessions"
@@ -118,7 +116,7 @@ func setTemplate(g *gin.Engine) {
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if utils.GetSession(c, "islogin") != "1" {
-			c.Redirect(301, "/login")
+			c.Redirect(301, "/888")
 			return
 		}
 		c.Next()
@@ -189,27 +187,27 @@ func Cors() gin.HandlerFunc {
 	}
 }
 
-func XSS() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		xssToken := c.DefaultPostForm("xss_token", "")
-		if len(xssToken) == 0 {
-			c.JSON(200, gin.H{
-				"code":    401,
-				"message": "请提交xsstoken",
-			})
-			c.Abort()
-			return
-		}
-		_, err := redis.Get(xssToken)
-		if err == nil {
-			c.JSON(200, gin.H{
-				"code":    403,
-				"message": "已经提交过了，不要重复提交",
-			})
-			c.Abort()
-			return
-		}
-		redis.Set(xssToken, xssToken, 100)
-		c.Next()
-	}
-}
+// func XSS() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		xssToken := c.DefaultPostForm("xss_token", "")
+// 		if len(xssToken) == 0 {
+// 			c.JSON(200, gin.H{
+// 				"code":    401,
+// 				"message": "请提交xsstoken",
+// 			})
+// 			c.Abort()
+// 			return
+// 		}
+// 		_, err := redis.Get(xssToken)
+// 		if err == nil {
+// 			c.JSON(200, gin.H{
+// 				"code":    403,
+// 				"message": "已经提交过了，不要重复提交",
+// 			})
+// 			c.Abort()
+// 			return
+// 		}
+// 		redis.Set(xssToken, xssToken, 100)
+// 		c.Next()
+// 	}
+// }

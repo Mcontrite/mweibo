@@ -65,7 +65,7 @@ func DelUser(maps interface{}) (err error) {
 // 	err = DB.First(&user, id).Error
 // 	return
 // }
-func IfUserExist(username string) bool {
+func IfUsernameExist(username string) bool {
 	var user User
 	DB.Model(&User{}).Select("id").Where("username=?", username).First(&user)
 	if user.ID > 0 {

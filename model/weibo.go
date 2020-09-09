@@ -50,7 +50,7 @@ func UpdateWeibo(weibo *Weibo, id string) error {
 // }
 
 func UpdateWeiboViewsCnt(weibo *Weibo) error {
-	return DB.Model(&weibo).Updates(map[string]interface{}{
+	return DB.Model(weibo).Updates(map[string]interface{}{
 		"views_cnt": weibo.ViewsCnt,
 	}).Error
 }
@@ -99,7 +99,8 @@ func CountWeibosByTag(tag string) (count int, err error) {
 // }
 
 func GetWeiboByID(id int) (weibo Weibo, err error) {
-	err = DB.Preload("User").Where("id = ?", id).Model(&Weibo{}).First(&weibo).Error
+	//err = DB.Preload("User").Where("id = ?", id).Model(&Weibo{}).First(&weibo).Error
+	err = DB.Where("id = ?", id).Model(&Weibo{}).First(&weibo).Error
 	return
 }
 

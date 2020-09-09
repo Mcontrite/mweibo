@@ -20,20 +20,24 @@ func registerApi(e *gin.Engine) {
 	e.POST("/login", ctrpost.LoginPOST)
 	e.GET("/logout", ctrget.LogoutGET)
 
-	e.GET("weibo/:id", ctr.DisplayWeibo)
+	//e.GET("weibo/:id", ctr.DisplayWeibo)
 	e.GET("tag/:tag", ctr.DisplayTag)
 
+	e.GET("readweibo/:id", ctrget.DisplayWeibo)
+	e.GET("delweibo/:id", ctrpost.DeleteWeibo)
+
 	auth := e.Group("/auth")
-	auth.Use(Auth())
+	// auth.Use(Auth())
+	//auth.Use()
 	{
 		auth.PUT("/user", ctr.UpdateUserAvatar)
 		auth.POST("/bindemail", ctr.BindUserEmail)
 		auth.POST("/unbindemail", ctr.UnbindUserEmail)
 
-		auth.GET("/weibo", ctr.CreateWeiboGet)
-		auth.POST("/weibo", ctr.CreateWeiboPost)
-		auth.GET("/weibo/:id", ctr.UpdateWeiboGet)
-		auth.POST("/weibo/:id", ctr.UpdateWeibo)
+		auth.GET("/weibo", ctrget.CreateWeiboGET)
+		auth.POST("/weibo", ctrpost.CreateWeiboPOST)
+		auth.GET("/weibo/:id", ctrget.UpdateWeiboGET)
+		auth.POST("/weibo/:id", ctrpost.UpdateWeiboPOST)
 
 		auth.POST("/comment", ctr.CreateComment)
 		auth.POST("/comment/:id", ctr.ReadComment)
@@ -45,9 +49,9 @@ func registerApi(e *gin.Engine) {
 	admin.Use(Admin())
 	{
 		admin.GET("/users", ctr.ListUsers)
-		admin.GET("/weibos", ctr.ListWeibos)
+		//admin.GET("/weibos", ctr.ListWeibos)
 
-		admin.DELETE("/weibo/:id", ctr.DeleteWeibo)
+		//admin.DELETE("/weibo/:id", ctr.DeleteWeibo)
 		admin.DELETE("/comment/:id", ctr.DeleteComment)
 	}
 }

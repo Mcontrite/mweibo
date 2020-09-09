@@ -6,7 +6,7 @@
             <li><a href="/">Admin</a></li>
         </ul>
         <ul>
-            {{if .user}}
+            <!-- {{if .user}}
             <li><a href="/">This is {{.user.Username}}</a></li>
             {{if .avatar}}
             <div class="pull-left image"  >
@@ -22,7 +22,7 @@
             <li><a href="/login">登录</a></li>
             <li><a href="/register">注册</a></li>
             ??
-            {{end}}
+            {{end}} -->
 
             {{if .islogin}}
             <li><a href="/my_favorite.html">个人中心</a></li>
@@ -32,6 +32,8 @@
             {{else}}
             <li><a href="/login">登录/注册</a></li>
             {{end}}
+
+            <a href="/auth/weibo">写微博</a>
         </ul>
     </div>
 </nav>

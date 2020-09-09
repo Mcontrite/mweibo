@@ -8,11 +8,13 @@
 </head>
 <body>
     {{template "header.html" .}}
+    {{if .islogin}}
     <form action="" method="post" >
         <input type="text" name="tags"><br/>
         <textarea name="content"></textarea><br/>
        <button type="submit">提交
     </form>
+    {{end}}
 </body>
 </html>
 {{end}}
