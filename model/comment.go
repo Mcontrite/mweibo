@@ -1,19 +1,19 @@
 package model
 
 import (
-	"strconv"
-
 	"github.com/jinzhu/gorm"
-	"github.com/lexkong/log"
 )
 
 type Comment struct {
 	gorm.Model
-	UserID  uint
-	WeiboID uint
-	Content string
-	IsRead  bool `gorm:"default:0"`
+	UserID  uint   `gorm:"default:0" json:"user_id"`
+	WeiboID uint   `gorm:"default:0" json:"weibo_id"`
+	Content string `gorm:"default:''" json:"content"`
+	IsRead  bool   `gorm:"default:0" json:"isread"`
 	// ImageURL
+	User   User
+	Weibo  Weibo
+	Attach []Attach
 }
 
 func CreateComment(comment *Comment) error {
@@ -46,24 +46,40 @@ func ListUnReadComments() (comments []*Comment, err error) {
 	return comments, err
 }
 
-func ListCommentsByWeiboID(weiboid string) (comments []*Comment, err error) {
-	weiid, err := strconv.ParseUint(weiboid, 10, 64)
-	if err != nil {
-		log.Warnf("Parse int error...")
-	}
-	rows, err := DB.Raw(
-		"select c.*,u.avatar from comments c inner join users u on c.user_id=u.id"+
-			" where c.post_id=? order by created_at desc ",
-		uint(weiid),
-	).Rows()
-	if err != nil {
-		log.Warnf("DB Row error...")
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var comment Comment
-		DB.ScanRows(rows, &comment)
-		comments = append(comments, &comment)
-	}
+// func ListCommentsByWeiboID(weiboid string) (comments []*Comment, err error) {
+// 	weiid, err := strconv.ParseUint(weiboid, 10, 64)
+// 	if err != nil {
+// 		log.Warnf("Parse int error...")
+// 	}
+// 	rows, err := DB.Raw(
+// 		"select c.*,u.avatar from comments c inner join users u on c.user_id=u.id"+
+// 			" where c.post_id=? order by created_at desc ",
+// 		uint(weiid),
+// 	).Rows()
+// 	if err != nil {
+// 		log.Warnf("DB Row error...")
+// 	}
+// 	defer rows.Close()
+// 	for rows.Next() {
+// 		var comment Comment
+// 		DB.ScanRows(rows, &comment)
+// 		comments = append(comments, &comment)
+// 	}
+// 	return
+// }
+
+func ListCommentsByWeiboID(id int, limit int) (comment []Comment, err error) {
+	err = DB.Preload("User").Model(&Comment{}).Where("weibo_id=?", id).Limit(limit).Find(&comment).Error
+	return
+}
+
+func GetCommentById(id int) (comment Comment, err error) {
+	err = DB.Model(&Comment{}).Where("id = ?", id).First(&comment).Error
+	return
+}
+
+func UpdateComment(id int, comment Comment) (newcommentt Comment, err error) {
+	err = DB.Model(&Comment{}).Where("id = ?", id).Updates(comment).Error
+	newcommentt, err = GetCommentById(id)
 	return
 }

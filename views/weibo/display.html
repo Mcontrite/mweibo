@@ -18,6 +18,7 @@
     <span>{{.weibo.CreatedAt}}</span>
     <span>{{.weibo.ViewsCnt}}</span>
     <div id="content">{{.weibo.Content}}</div>
+    <button><a href="/auth/comment">添加评论</a></button>
     <comment>
         {{range .weibo.Comments}}
         <div>
@@ -48,6 +49,19 @@
     </form>
     {{end}}
     </div>
+    <hr>Comment List
+    {{range .commentlist}}
+    <div class="pname">
+        <h4 class="mb-10">  
+            <a href="#" class="card-title l-blue">UserID: {{.UserID}}</a>
+            <small><i class="icofont icofont-ui-calendar"></i>
+                {{.CreatedAt}} 
+            </small>
+        </h4>
+        <p class="comment-text mb-10">{{.Content}}</p>
+    </div>
+    <button><a href="/auth/comment/{{.ID}}">修改评论</a></button>
+    {{end}}
 </body>
 </html>
 {{end}}

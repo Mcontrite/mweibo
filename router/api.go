@@ -39,9 +39,13 @@ func registerApi(e *gin.Engine) {
 		auth.GET("/weibo/:id", ctrget.UpdateWeiboGET)
 		auth.POST("/weibo/:id", ctrpost.UpdateWeiboPOST)
 
-		auth.POST("/comment", ctr.CreateComment)
-		auth.POST("/comment/:id", ctr.ReadComment)
-		auth.POST("/comments", ctr.ReadAllComments)
+		auth.GET("/comment", ctrget.CreateCommentGET)
+		auth.POST("/comment", ctrpost.CreateCommentPOST)
+		auth.POST("/comment/:id", ctrpost.UpdateComment)
+
+		// auth.POST("/comment", ctr.CreateComment)
+		// auth.POST("/comment/:id", ctr.ReadComment)
+		// auth.POST("/comments", ctr.ReadAllComments)
 
 		auth.POST("/tag", ctr.CreateTag)
 	}

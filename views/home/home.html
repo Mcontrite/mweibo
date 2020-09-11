@@ -56,6 +56,45 @@
         {{end}}
         </ul>
     </div>
+    <h1>This Is A Line</h1>
+    <hr>
+    {{$sesid := .sessions.Userid}}
+    {{ range .weiboList }}
+    <div class="blogs mb-30">
+        <div class="card"><br>
+            <div class="card-content w100dt">
+                <p>
+                    <a href="/readweibo/{{.ID}}" class="card-title">{{.Tags}}</a> 
+                    <a href="/readweibo/{{.ID}}" class="card-title">{{.Content}}</a> 
+                </p>
+                <p>
+                    <ul class="post-mate-time left">
+                        <li>
+                            <i class="icofont icofont-clock-time"></i> {{.CreatedAt}}
+                        </li>
+                        <li>
+                            <i class="icofont icofont-time"></i> {{.UpdatedAt}}
+                        </li>
+                    </ul>
+                </p>                                              
+            </div>
+            <div class="card-content w100dt">
+                <ul class="post-mate-time left">
+                    <li>
+                        <p class="hero left">
+                             By - <a href="{{if eq .User.ID $sesid}} /my.html {{else}}/user/{{.User.ID}}/info.html{{end}}" class="l-blue">
+                                {{.User.Username}}
+                                - {{.UserID}}
+                            </a>
+                        </p>
+                    </li>
+                </ul>
+            </div><br>                   
+            <!-- /.card-content -->
+        </div>                  
+        <!-- /.card -->
+    </div>
+    {{end}}
 </body>
 </html>
 {{end}}

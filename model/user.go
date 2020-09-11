@@ -8,17 +8,17 @@ import (
 
 type User struct {
 	gorm.Model
-	Username    string `gorm:"not null"`
-	Password    string `gorm:"not null"`
-	Email       string `gorm:""`
-	Avatar      string `gorm:"not null"`
-	ActiveToken string `gorm:""`
-	IsActive    bool   `gorm:"default:0"`
-	IsAdmin     bool   `gorm:"default:1"`
+	Username    string `gorm:"not null" json:"username"`
+	Password    string `gorm:"not null" json:"password"`
+	Email       string `gorm:"" json:"email"`
+	Avatar      string `gorm:"not null" json:"avatar"`
+	ActiveToken string `gorm:"" json:"activetoken"`
+	IsActive    bool   `gorm:"default:0" json:"isactive"`
+	IsAdmin     bool   `gorm:"default:1" json:"isadmin"`
 	// EmailVertifyAt  time.Time `gorm:""`
 	RememberMeToken string    `gorm:""`
-	SecretKey       string    `gorm:"default:null"`
-	ExpireTime      time.Time `gorm:"default:null"`
+	SecretKey       string    `gorm:"default:null" json:"secretkey"`
+	ExpireTime      time.Time `gorm:"default:null" json:"expiretime"`
 }
 
 func CreateUser(user *User) error {

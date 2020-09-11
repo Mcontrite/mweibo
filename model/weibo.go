@@ -14,12 +14,14 @@ import (
 
 type Weibo struct {
 	gorm.Model
-	UserID      uint   `gorm:"not null" sql:"index"`
-	Content     string `gorm:"type:text;not null"`
-	ViewsCnt    int    `gorm:"default:0"`
-	CommentsCnt int    `gorm:"default:0"`
+	UserID      uint   `gorm:"not null" sql:"index"  json:"userid"`
+	Content     string `gorm:"type:text;not null" json:"content"`
+	ViewsCnt    int    `gorm:"default:0" json:"viewscnt"`
+	CommentsCnt int    `gorm:"default:0" json:"commentscnt"`
+	User        User
 	Tags        []*Tag
 	Comments    []*Comment
+	Attach      []Attach
 }
 
 func CreateWeibo(weibo *Weibo) error {

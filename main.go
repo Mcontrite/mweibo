@@ -26,6 +26,7 @@ func main() {
 		&model.Tag{},
 		&model.TagWeibo{},
 		&model.PwdReset{},
+		&model.Attach{},
 	)
 	defer db.Close()
 	g := router.InitRouter()
@@ -37,5 +38,7 @@ func main() {
 
 // log mail csrf passwordreset pagination
 // group image upload attach favorite ip
-// myweibos captcha auth admin
+// myweibos captcha auth admin collections likes
 // ROUTE tips
+// create weibo while user not exsit
+// editor
