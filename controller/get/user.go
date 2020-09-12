@@ -11,8 +11,8 @@ import (
 func RegisterGET(c *gin.Context) {
 	islogin := userservice.IsLogin(c)
 	sessions := userservice.GetSessions(c)
-	c.HTML(http.StatusOK, "register.html", gin.H{
-		"title":    "用户注册",
+	c.HTML(http.StatusOK, "user/register.html", gin.H{
+		//"title":    "用户注册",
 		"islogin":  islogin,
 		"sessions": sessions,
 	})
@@ -22,7 +22,6 @@ func LoginGET(c *gin.Context) {
 	islogin := userservice.IsLogin(c)
 	sessions := userservice.GetSessions(c)
 	c.HTML(http.StatusOK, "user/login.html", gin.H{
-		"title":    "Home Page",
 		"islogin":  islogin,
 		"sessions": sessions,
 	})

@@ -27,7 +27,7 @@ package controller
 // 		})
 // 		return
 // 	}
-// 	if tags != "" {
+// 	if len(tags) > 0 {
 // 		sli := strings.Split(tags, ",")
 // 		for _, v := range sli {
 // 			tagid, _ := strconv.ParseUint(v, 10, 64)
@@ -130,9 +130,9 @@ package controller
 // 	})
 // }
 
-// func ListWeibos(c *gin.Context) {
+// func ListWeibosByTag(c *gin.Context) {
 // 	user, _ := c.Get(CONTEXT_USER_KEY)
-// 	weibos, _ := model.ListWeibos("")
+// 	weibos, _ := model.ListWeibosByTag("")
 // 	c.HTML(http.StatusOK, "admin/weibos.html", gin.H{
 // 		"user":   user,
 // 		"weibos": weibos,

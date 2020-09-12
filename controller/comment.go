@@ -51,7 +51,7 @@ func ReadComment(c *gin.Context) {
 	comid, _ := strconv.ParseUint(commentid, 10, 64)
 	comment := &model.Comment{}
 	comment.ID = uint(comid)
-	err := model.UpdateCommentIsRead(comment)
+	err := model.SetCommentRead(comment)
 	if err != nil {
 		res["message"] = err.Error()
 		return
@@ -62,7 +62,7 @@ func ReadComment(c *gin.Context) {
 func ReadAllComments(c *gin.Context) {
 	res := gin.H{}
 	defer writeJSON(c, res)
-	err := model.SetAllCommentRead()
+	err := model.SetAllCommentsRead()
 	if err != nil {
 		res["message"] = err.Error()
 		return

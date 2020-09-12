@@ -1,4 +1,4 @@
-package controller
+package post
 
 import (
 	"mweibo/model"
@@ -9,6 +9,13 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
 )
+
+func writeJSON(c *gin.Context, h gin.H) {
+	if _, ok := h["succeed"]; !ok {
+		h["succeed"] = false
+	}
+	c.JSON(http.StatusOK, h)
+}
 
 func CreateTag(c *gin.Context) {
 	res := gin.H{}
@@ -26,6 +33,7 @@ func CreateTag(c *gin.Context) {
 	res["data"] = tag
 }
 
+//*
 func ListTags(c *gin.Context) {
 	var (
 		tagname string

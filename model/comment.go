@@ -24,26 +24,16 @@ func DeleteComment(comment *Comment) error {
 	return DB.Delete(comment, "user_id=? and id=?", comment.UserID, comment.ID).Error
 }
 
-func CountComments() (count int) {
-	DB.Model(&Comment{}).Count(&count)
-	return
-}
-
-func UpdateCommentIsRead(comment *Comment) error {
+func SetCommentRead(comment *Comment) error {
 	return DB.Model(&comment).Updates(map[string]interface{}{
 		"is_read": true,
 	}).Error
 }
 
-func SetAllCommentRead() error {
+func SetAllCommentsRead() error {
 	return DB.Model(&Comment{}).Where("is_read=?", false).Updates(map[string]interface{}{
 		"is_read": true,
 	}).Error
-}
-
-func ListUnReadComments() (comments []*Comment, err error) {
-	err = DB.Where("is_read=?", false).Order("created_at desc").Find(&comments).Error
-	return comments, err
 }
 
 // func ListCommentsByWeiboID(weiboid string) (comments []*Comment, err error) {
@@ -67,19 +57,28 @@ func ListUnReadComments() (comments []*Comment, err error) {
 // 	}
 // 	return
 // }
-
 func ListCommentsByWeiboID(id int, limit int) (comment []Comment, err error) {
 	err = DB.Preload("User").Model(&Comment{}).Where("weibo_id=?", id).Limit(limit).Find(&comment).Error
 	return
 }
 
-func GetCommentById(id int) (comment Comment, err error) {
+func ListUnReadComments() (comments []*Comment, err error) {
+	err = DB.Where("is_read=?", false).Order("created_at desc").Find(&comments).Error
+	return comments, err
+}
+
+func GetCommentByID(id int) (comment Comment, err error) {
 	err = DB.Model(&Comment{}).Where("id = ?", id).First(&comment).Error
 	return
 }
 
 func UpdateComment(id int, comment Comment) (newcommentt Comment, err error) {
 	err = DB.Model(&Comment{}).Where("id = ?", id).Updates(comment).Error
-	newcommentt, err = GetCommentById(id)
+	newcommentt, err = GetCommentByID(id)
+	return
+}
+
+func CountComments() (count int) {
+	DB.Model(&Comment{}).Count(&count)
 	return
 }

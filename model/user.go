@@ -1,33 +1,32 @@
 package model
 
 import (
-	"time"
-
 	"github.com/jinzhu/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Username    string `gorm:"not null" json:"username"`
-	Password    string `gorm:"not null" json:"password"`
-	Email       string `gorm:"" json:"email"`
-	Avatar      string `gorm:"not null" json:"avatar"`
-	ActiveToken string `gorm:"" json:"activetoken"`
-	IsActive    bool   `gorm:"default:0" json:"isactive"`
-	IsAdmin     bool   `gorm:"default:1" json:"isadmin"`
+	Username        string `gorm:"not null" json:"username"`
+	Password        string `gorm:"not null" json:"password"`
+	Email           string `gorm:"" json:"email"`
+	Avatar          string `gorm:"not null" json:"avatar"`
+	IsActive        bool   `gorm:"default:0" json:"isactive"`
+	IsAdmin         bool   `gorm:"default:1" json:"isadmin"`
+	ActiveToken     string `gorm:"" json:"activetoken"`
+	RememberMeToken string `gorm:""`
 	// EmailVertifyAt  time.Time `gorm:""`
-	RememberMeToken string    `gorm:""`
-	SecretKey       string    `gorm:"default:null" json:"secretkey"`
-	ExpireTime      time.Time `gorm:"default:null" json:"expiretime"`
 }
 
+// func (user *User) CreateUser() error {
+// 	return DB.Save(user).Error
+// }
 func CreateUser(user *User) error {
 	return DB.Save(user).Error
 	// return DB.Create(user).Error
 }
 
-// func (user *User) CreateUser() error {
-// 	return DB.Save(user).Error
+// func (user *User) UpdateUser()(err error){
+// 	return DB.Save(&user).Error
 // }
 func UpdateUser(maps interface{}, items map[string]interface{}) (err error) {
 	err = DB.Model(&User{}).Where(maps).Updates(items).Error
@@ -56,15 +55,6 @@ func DelUser(maps interface{}) (err error) {
 	return
 }
 
-// func GetUserByID(id int) (user *User, err error) {
-// 	err = DB.First(&user, id).Error
-// 	return
-// }
-
-// func GetUserByID(id interface{}) (user *User, err error) {
-// 	err = DB.First(&user, id).Error
-// 	return
-// }
 func IfUsernameExist(username string) bool {
 	var user User
 	DB.Model(&User{}).Select("id").Where("username=?", username).First(&user)
@@ -79,43 +69,54 @@ func GetUser(maps interface{}) (user User, err error) {
 	return
 }
 
+// func GetUserByID(id int) (user *User, err error) {
+// 	err = DB.First(&user, id).Error
+// 	return
+// }
+// func GetUserByID(id interface{}) (user *User, err error) {
+// 	err = DB.First(&user, id).Error
+// 	return
+// }
 func GetUserByID(id int) (user User, err error) {
 	err = DB.Model(&User{}).Where("id=?", id).First(&user).Error
 	return
 }
 
-// func GetUserByUsername(name string) (user *User, err error) {
-// 	err = DB.First(&user, "username=?", name).Error
-// 	return
+// func GetUserByUsername(name string) (*User, error) {
+// 	var user User
+// 	err := DB.First(&user, "username=?", name).Error
+// 	return &user, err
 // }
-
-func GetUserByUsername(name string) (*User, error) {
-	var user User
-	err := DB.First(&user, "username=?", name).Error
-	return &user, err
+func GetUserByUsername(name string) (user *User, err error) {
+	err = DB.First(&user, "username=?", name).Error
+	return
 }
 
 func GetUserByEmail(email string) (user *User, err error) {
+	// err=DB.Where("email=?",email).First(&user).Error
 	err = DB.First(&user, "email=?", email).Error
 	return
 }
 
-// func GetUserByWeiboID(weiboid int) (user *User, err error) {
-// 	weibo, _ := GetWeiboByID(weiboid)
-// 	user, err = GetUserByID(int(weibo.UserID))
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return user, err
-// }
+func GetUserByActiveToken(token string) (user *User, err error) {
+	err = DB.Where("activae_token=?", token).First(&user).Error
+	return
+}
 
-func CountUsers() (count int) {
-	DB.Model(&User{}).Count(&count)
+func GetUserByRememberMeToken(token string) (user *User, err error) {
+	err = DB.Where("remember_me_token=?", token).First(&user).Error
+	return
+}
+
+func GetUserByWeiboID(id int) (user User, err error) {
+	weibo, _ := GetWeiboByID(id)
+	user, _ = GetUserByID(int(weibo.UserID))
 	return
 }
 
 func ListUsers() (users []*User, err error) {
-	err = DB.Find(&users, "is_admin=?", true).Error
+	//err = DB.Find(&users, "is_admin=?", true).Error
+	err = DB.Order("id").Find(&users).Error
 	return
 }
 
@@ -129,4 +130,9 @@ func (user *User) GetUserAvatar() string {
 		return user.Avatar
 	}
 	return ""
+}
+
+func CountUsers() (count int) {
+	DB.Model(&User{}).Count(&count)
+	return
 }

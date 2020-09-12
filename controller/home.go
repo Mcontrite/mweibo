@@ -17,7 +17,7 @@ const (
 )
 
 func Home(c *gin.Context) {
-	weibos, err := model.ListWeibos("")
+	weibos, err := model.ListWeibosByTag("")
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
@@ -31,14 +31,14 @@ func Home(c *gin.Context) {
 	user, _ := c.Get(CONTEXT_USER_KEY)
 	tags, _ := model.ListTags()
 	mvweibos, _ := model.ListMaxViewWeibos()
-	mcweibos, _ := model.ListMaxCommentWeibos()
+	//mcweibos, _ := model.ListMaxCommentWeibos()
 	c.HTML(http.StatusOK, "home/home.html", gin.H{
-		"user":             user,
-		"weibos":           weibos,
-		"tags":             tags,
-		"maxViewWeibos":    mvweibos,
-		"maxCommentWeibos": mcweibos,
-		"path":             c.Request.URL.Path,
+		"user":          user,
+		"weibos":        weibos,
+		"tags":          tags,
+		"maxViewWeibos": mvweibos,
+		//"maxCommentWeibos": mcweibos,
+		"path": c.Request.URL.Path,
 	})
 }
 

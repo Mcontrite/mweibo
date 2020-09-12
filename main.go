@@ -31,14 +31,13 @@ func main() {
 	defer db.Close()
 	g := router.InitRouter()
 	//g.Run(conf.GetConfiguration().ServerPort)
-
-	g.Run(fmt.Sprintf(":%d", conf.Serverconfig.ServerPort))
 	//g.Run(":8080")
+	g.Run(fmt.Sprintf(":%d", conf.Serverconfig.ServerPort))
 }
 
 // log mail csrf passwordreset pagination
 // group image upload attach favorite ip
 // myweibos captcha auth admin collections likes
-// ROUTE tips
+// ROUTE'tips user'profile input'check
 // create weibo while user not exsit
-// editor
+// editor gocron

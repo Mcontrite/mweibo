@@ -25,15 +25,11 @@ func DisplayWeibo(c *gin.Context) {
 		c.HTML(http.StatusNotFound, "error/error.html", gin.H{})
 		return
 	}
-	// fcomment, _ := model.GetWeiboFirstCommentByTid(weiboID)
-	// fcomment.MessageFmt = html.UnescapeString(fcomment.MessageFmt)
+	weibo.ViewsCnt++
+	model.UpdateWeiboViewsCnt(&weibo)
 	islogin := userservice.IsLogin(c)
 	sessions := userservice.GetSessions(c)
 	commentlist, _ := model.ListCommentsByWeiboID(weiboID, 500)
-	// commentlistLen := len(commentlist)
-	// attachs, _ := model.GetAttachsByCommentID(int(fcomment.ID))
-	// isfav, _ := model.CheckFavourite(sessions.Userid, weiboID)
-	// model.UpdateWeiboViewsCnt(weiboID)
 	c.HTML(http.StatusOK, "weibo/display.html", gin.H{
 		"weibo": weibo,
 		// "fcomment":         fcomment,
@@ -59,16 +55,5 @@ func UpdateWeiboGET(c *gin.Context) {
 		"islogin":  islogin,
 		"sessions": sessions,
 		// "attachs":  attachs,
-	})
-}
-
-func CreateCommentGET(c *gin.Context) {
-	weiboID, _ := strconv.Atoi(c.Param("id"))
-	sessions := userservice.GetSessions(c)
-	islogin := userservice.IsLogin(c)
-	c.HTML(http.StatusOK, "comment/create.html", gin.H{
-		"sessions": sessions,
-		"islogin":  islogin,
-		"weibo_id": weiboID,
 	})
 }

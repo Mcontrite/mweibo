@@ -40,7 +40,7 @@ func CreateWeiboPOST(c *gin.Context) {
 		utils.ResponseJSONError(c, code)
 		return
 	}
-	if tags != "" {
+	if len(tags) > 0 {
 		sli := strings.Split(tags, ",")
 		for _, v := range sli {
 			tagid, _ := strconv.ParseUint(v, 10, 64)
@@ -51,81 +51,10 @@ func CreateWeiboPOST(c *gin.Context) {
 			err = model.CreateTagWeibo(tw)
 		}
 	}
-	// comment := &model.Comment{
-	// 	WeiboID:  int(newWeibo.ID),
-	// 	UserID:     uid,
-	// 	Isfirst:    1,
-	// 	UserIP:     uip,
-	// 	Doctype:    doctype,
-	// 	Message:    message,
-	// 	MessageFmt: message,
-	// }
-	// newComment, err := model.AddComment(comment)
-	// if err != nil {
-	// 	logging.Info("comment入库错误", err.Error())
-	// 	code = utils.ERROR
-	// 	code = utils.ERROR_SQL_INSERT_FAIL
-	// 	utils.ResponseJSONError(c, code)
-	// 	return
-	// }
-	// model.UpdateWeibo(int(newWeibo.ID), model.Weibo{FirstCommentID: int(newComment.ID), LastDate: time.Now()})
-	// weibo_service.AfterAddNewWeibo(newWeibo)
-	// if len(attachFileString) > 0 {
-	// 	for _, attachfile := range attachfiles {
-	// 		file := strings.Split(attachfile, "|")
-	// 		fname := file[0]
-	// 		forginname := file[1]
-	// 		ftype := file_package.GetType(fname)
-	// 		ofile, err := os.Open(fname)
-	// 		defer ofile.Close()
-	// 		if err != nil {
-	// 			continue
-	// 		}
-	// 		fsize, _ := file_package.GetSize(ofile)
-	// 		attach := &model.Attach{
-	// 			WeiboID:   int(newWeibo.ID),
-	// 			CommentID:     int(newComment.ID),
-	// 			UserID:      uid,
-	// 			Filename:    fname,
-	// 			Orgfilename: forginname,
-	// 			Filetype:    ftype,
-	// 			Filesize:    fsize,
-	// 		}
-	// 		_, err = model.AddAttach(attach)
-	// 		if err != nil {
-	// 			logging.Info("attach入库错误", err.Error())
-	// 			code = utils.ERROR_SQL_INSERT_FAIL
-	// 			utils.ResponseJSONError(c, code)
-	// 			return
-	// 		}
-	// 	}
-	// }
 	utils.ResponseJSONOK(c, code, nil)
 	//c.Redirect(http.StatusMovedPermanently, "/")
 }
 
-// type Tids struct {
-// 	Tidarr []string `json:"tidarr"`
-// }
-// func DeleteWeibos(c *gin.Context) {
-// 	ids := c.PostForm("tidarr")
-// 	code := utils.SUCCESS
-// 	idsSlice := strings.Split(ids, ",")
-// 	uid, _ := strconv.Atoi(utils.GetSession(c, "userid"))
-// 	// isadmin := user_service.IsAdmin(uid)
-// 	// if isadmin == "0" {
-// 	// 	code = utils.UNPASS
-// 	// 	utils.ResponseJSONError(c, code)
-// 	// 	return
-// 	// }
-// 	err := weibo_service.DelWeibos(idsSlice)
-// 	if err != nil {
-// 		code = utils.ERROR
-// 		utils.ResponseJSONError(c, code)
-// 		return
-// 	}
-// 	utils.ResponseJSONOK(c, code, ids)
-// }
 func DeleteWeibo(c *gin.Context) {
 	weiboid := c.Param("id")
 	weiid, _ := strconv.ParseUint(weiboid, 10, 64)
@@ -156,11 +85,8 @@ func DeleteWeibo(c *gin.Context) {
 
 func UpdateWeiboPOST(c *gin.Context) {
 	weibo_id, _ := strconv.Atoi(c.Param("id"))
-	// comment_id, _ := strconv.Atoi(c.DefaultPostForm("comment_id", "1"))
-	// doctype, _ := strconv.Atoi(c.DefaultPostForm("doctype", "0"))
-	// title := c.DefaultPostForm("title", "")
-	// message := c.DefaultPostForm("message", "")
 	content := c.PostForm("content")
+	tags := c.PostForm("tags")
 	uid, _ := strconv.Atoi(utils.GetSession(c, "userid"))
 	// uip := c.ClientIP()
 	code := utils.SUCCESS
@@ -175,28 +101,23 @@ func UpdateWeiboPOST(c *gin.Context) {
 		utils.ResponseJSONError(c, code)
 		return
 	}
-	// oldComment, err := model.GetWeiboFirstCommentByTid(weibo_id)
-	// if err != nil {
-	// 	code = utils.ERROR_UNFIND_DATA
-	// 	utils.ResponseJSONError(c, code)
-	// 	return
-	// }
-	// if int(oldComment.ID) != comment_id {
-	// 	code = utils.UNPASS
-	// 	utils.ResponseJSONError(c, code)
-	// 	return
-	// }
 	weibo := &model.Weibo{
 		// UserIP: uip,
 		Content: content,
 	}
 	model.UpdateWeibo(weibo, c.Param("id"))
-	// comment := model.Comment{
-	// 	UserIP:  uip,
-	// 	Doctype: doctype,
-	// 	Message: message,
-	// }
-	// model.UpdateComment(comment_id, comment)
+	model.DeleteTagWeiboByWeiboID(weibo_id)
+	if len(tags) > 0 {
+		sli := strings.Split(tags, ",")
+		for _, v := range sli {
+			tagid, _ := strconv.ParseUint(v, 10, 64)
+			tw := &model.TagWeibo{
+				WeiboID: uint(weibo_id),
+				TagID:   uint(tagid),
+			}
+			model.CreateTagWeibo(tw)
+		}
+	}
 	utils.ResponseJSONOK(c, code, nil)
 }
 

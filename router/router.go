@@ -3,7 +3,8 @@ package router
 import (
 	"fmt"
 	"html/template"
-	ctr "mweibo/controller"
+	"mweibo/conf"
+	ctrget "mweibo/controller/get"
 	"mweibo/middleware/logger"
 	"mweibo/utils"
 	"net/http"
@@ -25,19 +26,25 @@ import (
 // 	registerApi(g)
 // 	return g
 // }
-
 func InitRouter() *gin.Engine {
 	g := gin.New()
-	//gin.SetMode(conf.ServerConfig.RunMode)
-	gin.SetMode("debug")
+	gin.SetMode(conf.Serverconfig.ServerRunmode)
+	//gin.SetMode("debug")
 	setMiddleware(g)
 	setSession(g)
 	setTemplate(g)
-
-	//g.Use(setContext())
-	g.NoRoute(ctr.Handle404)
+	g.NoRoute(ctrget.Handle404)
 	registerApi(g)
 	return g
+}
+
+func setMiddleware(g *gin.Engine) {
+	g.Use(gin.Logger())
+	g.Use(gin.Recovery())
+	g.Use(Cors())
+	g.Use(limit.MaxAllowed(100))
+	g.Use(logger.LoggerToFile())
+	//g.Use(setContext())
 }
 
 // func setSession(e *gin.Engine) {
@@ -52,15 +59,6 @@ func InitRouter() *gin.Engine {
 // 	})
 // 	e.Use(sessions.Sessions("gin-session", store))
 // }
-
-func setMiddleware(g *gin.Engine) {
-	g.Use(gin.Logger())
-	g.Use(gin.Recovery())
-	g.Use(Cors())
-	g.Use(limit.MaxAllowed(100))
-	g.Use(logger.LoggerToFile())
-}
-
 func setSession(g *gin.Engine) {
 	store := sessions.NewCookieStore([]byte("MWeiBoSession"))
 	g.Use(sessions.Middleware("mweibo_session", store))
@@ -88,7 +86,6 @@ func setSession(g *gin.Engine) {
 // 	e.SetFuncMap(funcMap)
 // 	e.LoadHTMLGlob("views/**/*")
 // }
-
 func setTemplate(g *gin.Engine) {
 	funcMap := template.FuncMap{}
 	g.SetFuncMap(funcMap)
@@ -112,7 +109,6 @@ func setTemplate(g *gin.Engine) {
 // 		c.Abort()
 // 	}
 // }
-
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if utils.GetSession(c, "islogin") != "1" {

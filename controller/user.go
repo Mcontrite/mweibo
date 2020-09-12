@@ -33,6 +33,8 @@ func RegisterPost(c *gin.Context) {
 		Username: username,
 		Password: password,
 	}
+	user.ActiveToken = string(utils.CreateRandomBytes(30))
+	user.RememberMeToken = string(utils.CreateRandomBytes(10))
 	//user.Password = utils.MD5(user.Username + user.Password)
 	user.Password = utils.MD5(username + password)
 	if err := model.CreateUser(user); err != nil {

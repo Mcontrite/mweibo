@@ -18,36 +18,16 @@
     <span>{{.weibo.CreatedAt}}</span>
     <span>{{.weibo.ViewsCnt}}</span>
     <div id="content">{{.weibo.Content}}</div>
-    <button><a href="/auth/comment">添加评论</a></button>
-    <comment>
-        {{range .weibo.Comments}}
-        <div>
-            {{if .Avatar}}
-            <img src="{{.Avatar}}">
-            {{else}}
-            <img src="http://placehold.it/64x64">
-            {{end}}
-            <div>
-                <h4 class="media-heading"><small>{{.CreatedAt}}</small></h4>
-                {{.Content}}
-            </div>
-        </div>
-        {{end}}
-    </comment>
+    <button><a href="/auth/comment">高级评论</a></button>
     <div>
-    {{if not .user}}
-        <a href="/login">登录发表评论</a>
-    {{else}}
-    <form action="" method="post">
-        <input name="weiboid" type="hidden" value="{{.weibo.ID}}">
-        <div><textarea name="content"></textarea></div>
-        <div>
-            <div>验证码<input name="captcha_code"></div>
-            <div><img src="/captcha"/></div>
-        </div>
-        <div><button type="submit">评论</button></div>
-    </form>
-    {{end}}
+        <form action="/auth/comment" method="post">
+            <div >
+                Create Comment
+                <input type="hidden" name="weiboid" value="{{.weibo.ID}}"></input>
+                <textarea name="content"></textarea><br/>
+                <button type="submit">简单评论
+            </div>
+        </form>
     </div>
     <hr>Comment List
     {{range .commentlist}}

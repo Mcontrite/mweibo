@@ -4,8 +4,16 @@ import "github.com/jinzhu/gorm"
 
 type TagWeibo struct {
 	gorm.Model
-	WeiboID uint
 	TagID   uint
+	WeiboID uint
+}
+
+func CreateTagWeibo(tagweibo *TagWeibo) error {
+	return DB.Create(tagweibo).Error
+}
+
+func DeleteTagWeiboByWeiboID(id interface{}) error {
+	return DB.Delete(&TagWeibo{}, "weibo_id=?", id).Error
 }
 
 // func ListTagWeiboByWeiboID(weiboid string)(tags []*Tag,err error){
@@ -20,11 +28,3 @@ type TagWeibo struct {
 
 // 	}
 // }
-
-func CreateTagWeibo(tagweibo *TagWeibo) error {
-	return DB.Create(tagweibo).Error
-}
-
-func DeleteTagWeiboByWeiboID(id interface{}) error {
-	return DB.Delete(&TagWeibo{}, "weibo_id=?", id).Error
-}

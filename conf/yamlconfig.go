@@ -3,8 +3,6 @@ package conf
 import (
 	"io/ioutil"
 
-	"github.com/lexkong/log"
-
 	"gopkg.in/yaml.v3"
 )
 
@@ -47,7 +45,7 @@ func GetConfiguration() *Configuration {
 func LoadConfiguration(path string) error {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal("Read config file error: ", err)
+		//log.Fatal("Read config file error: ", err)
 		return err
 	}
 	var config Configuration
