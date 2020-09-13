@@ -59,6 +59,7 @@ func LoginPost(c *gin.Context) {
 		})
 		return
 	}
+
 	user, err := model.GetUserByUsername(username)
 	if user.Password != utils.MD5(username+password) || err != nil {
 		c.HTML(http.StatusOK, "user/login.html", gin.H{

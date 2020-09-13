@@ -1,6 +1,9 @@
 package utils
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 func GetCurrentTime() time.Time {
 	loc, _ := time.LoadLocation("Asia/Shanghai")
@@ -52,4 +55,14 @@ func Add(a1, a2 int) int {
 // 相减
 func Minus(a1, a2 int) int {
 	return a1 - a2
+}
+
+// 简单的解析模板方法
+func ParseEasyTemplate(tplString string, data map[string]string) string {
+	replaceArr := []string{}
+	for k, v := range data {
+		replaceArr = append(replaceArr, k, v)
+	}
+	r := strings.NewReplacer(replaceArr...)
+	return r.Replace(tplString)
 }

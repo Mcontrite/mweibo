@@ -1,4 +1,4 @@
-package service
+package user
 
 import (
 	"mweibo/model"
@@ -17,18 +17,6 @@ type UserSession struct {
 	// Usersayingcnt  int    `json:"usersayingcnt"`
 	// Usercommentcnt int    `json:"usercommentcnt"`
 	Isadmin string `json:"isadmin"`
-}
-
-func LoginSession(c *gin.Context, user model.User, sok chan int) {
-	utils.SetSession(c, "username", user.Username)
-	utils.SetSession(c, "userid", strconv.Itoa(int(user.ID)))
-	utils.SetSession(c, "useravatar", user.Avatar)
-	// utils.SetSession(c, "userarticlecnt", strconv.Itoa(user.ArticlesCnt))
-	// utils.SetSession(c, "userreplycnt", strconv.Itoa(user.ReplysCnt))
-	// utils.SetSession(c, "usersayingcnt", strconv.Itoa(user.SayingsCnt))
-	// utils.SetSession(c, "usercommentcnt", strconv.Itoa(user.CommentsCnt))
-	// utils.SetSession(c, "isadmin", IsAdmin(user.GroupID))
-	sok <- 1
 }
 
 func GetSessions(c *gin.Context) (sessions *UserSession) {
@@ -51,6 +39,18 @@ func GetSessions(c *gin.Context) (sessions *UserSession) {
 		Isadmin: isadmin,
 	}
 	return
+}
+
+func LoginSession(c *gin.Context, user model.User, sok chan int) {
+	utils.SetSession(c, "username", user.Username)
+	utils.SetSession(c, "userid", strconv.Itoa(int(user.ID)))
+	utils.SetSession(c, "useravatar", user.Avatar)
+	// utils.SetSession(c, "userarticlecnt", strconv.Itoa(user.ArticlesCnt))
+	// utils.SetSession(c, "userreplycnt", strconv.Itoa(user.ReplysCnt))
+	// utils.SetSession(c, "usersayingcnt", strconv.Itoa(user.SayingsCnt))
+	// utils.SetSession(c, "usercommentcnt", strconv.Itoa(user.CommentsCnt))
+	// utils.SetSession(c, "isadmin", IsAdmin(user.GroupID))
+	sok <- 1
 }
 
 func LogoutSession(c *gin.Context) {

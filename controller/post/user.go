@@ -1,11 +1,11 @@
 package post
 
 import (
-	"fmt"
 	"mweibo/middleware/jwt"
 	"mweibo/model"
 	userservice "mweibo/service/user"
 	"mweibo/utils"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -92,6 +92,13 @@ func LoginPOST(c *gin.Context) {
 	// 	utils.ResponseJSONOK(c, code, data)
 	// 	return
 	// }
+
+	// user, errors := userLoginForm.ValidateAndGetUser(c)
+	// if !user.IsActivated() {
+	// 	flash.NewWarningFlash(c, "你的账号未激活，请检查邮箱中的注册邮件进行激活。")
+	// 	controllers.RedirectRouter(c, "root")
+	// 	return
+	// }
 	if user.Password != utils.MD5(username+password) {
 		code = utils.ERROR_NOT_EXIST_USER
 		utils.ResponseJSONOK(c, code, data)
@@ -104,7 +111,6 @@ func LoginPOST(c *gin.Context) {
 	go userservice.LoginSession(c, user, sok)
 	<-sok
 	utils.ResponseJSONError(c, code)
-	fmt.Println("KKKKKKKKKKKKKKK: LOGIN SUCCESS")
 }
 
 func IfUsernameExist(c *gin.Context) {
@@ -127,6 +133,29 @@ func RefreshToken(c *gin.Context) {
 	data["exp_time"] = time
 	code := utils.SUCCESS
 	utils.ResponseJSONOK(c, code, data)
+}
+
+// 邮箱验证、用户激活
+func ConfirmEmail(c *gin.Context) {
+	token := c.Param("token")
+	user, err := model.GetUserByActiveToken(token)
+	if user == nil || err != nil {
+		//controllers.Render404(c)
+		return
+	}
+	// 更新用户
+	user.IsActive = true
+	user.ActiveToken = ""
+	// if err = user.Update(false); err != nil {
+	// 	flash.NewSuccessFlash(c, "用户激活失败: "+err.Error())
+	// 	controllers.RedirectRouter(c, "root")
+	// 	return
+	// }
+	var sok chan int = make(chan int, 1)
+	go userservice.LoginSession(c, user, sok)
+	//flash.NewSuccessFlash(c, "恭喜你，激活成功！")
+	//controllers.RedirectRouter(c, "users.show", user.ID)
+	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
 // func GetUser(c *gin.Context) {

@@ -5,7 +5,10 @@ import (
 	"html/template"
 	"mweibo/conf"
 	ctrget "mweibo/controller/get"
+	"mweibo/middleware/csrf"
+	"mweibo/middleware/flash"
 	"mweibo/middleware/logger"
+	gwservice "mweibo/service/gwsession"
 	"mweibo/utils"
 	"net/http"
 	"strings"
@@ -44,6 +47,9 @@ func setMiddleware(g *gin.Engine) {
 	g.Use(Cors())
 	g.Use(limit.MaxAllowed(100))
 	g.Use(logger.LoggerToFile())
+	g.Use(csrf.Csrf())
+	g.Use(flash.SaveOldForm())            // 记忆上次表单提交的内容
+	g.Use(gwservice.GetUserFromSession()) // 从 session 中获取用户
 	//g.Use(setContext())
 }
 
@@ -61,6 +67,11 @@ func setMiddleware(g *gin.Engine) {
 // }
 func setSession(g *gin.Engine) {
 	store := sessions.NewCookieStore([]byte("MWeiBoSession"))
+	// store.Options(sessions.Options{
+	// 	HttpOnly: true,
+	// 	Path:     "/",
+	// 	MaxAge:   86400 * 30,
+	// })
 	g.Use(sessions.Middleware("mweibo_session", store))
 }
 

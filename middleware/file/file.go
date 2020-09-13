@@ -95,3 +95,17 @@ func GetType(fileName string) (ftype string) {
 	}
 	return
 }
+
+// 读取文件内容
+func ReadFile(filePath string) (string, error) {
+	f, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+	bs, err := ioutil.ReadAll(f)
+	if err != nil {
+		return "", err
+	}
+	return string(bs), nil
+}
