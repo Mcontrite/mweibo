@@ -52,7 +52,7 @@ func FollowSomeUsers(selfid uint, userids ...uint) error {
 	return DB.Exec(sqlstr).Error
 }
 
-func UnfollowSomeUsers(selfid uint, userids ...uint) error {
+func UnFollowSomeUsers(selfid uint, userids ...uint) error {
 	sqlstr := fmt.Sprintf("delete from followers where follower_id=%d and user_id in (", selfid)
 	for k, v := range userids {
 		sqlstr += strconv.Itoa(int(v))

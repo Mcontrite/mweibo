@@ -12,7 +12,7 @@ func Home(c *gin.Context) {
 	weiboList, _ := model.ListWeibosByTag("")
 	islogin := userservice.IsLogin(c)
 	sessions := userservice.GetSessions(c)
-	user, _ := model.GetUserByID(sessions.Userid)
+	user, _ := model.GetUserObjectByID(sessions.Userid)
 	tags, _ := model.ListTags()
 	weibosNum := model.CountWeibos()
 	usersNum := model.CountUsers()

@@ -26,7 +26,7 @@ func setRememberMeTokenInCookie(c *gin.Context, user *model.User) {
 	// 更新用户的 RememberMeToken
 	token := string(utils.CreateRandomBytes(10))
 	user.RememberMeToken = token
-	if err := user.Update(false); err != nil {
+	if err := user.UpdateUser(); err != nil {
 		return
 	}
 	c.SetCookie(rememberCookieName, user.RememberMeToken, rememberMaxAge, "/", "", false, true)
@@ -41,7 +41,7 @@ func getRememberMeTokenFromCookie(c *gin.Context) string {
 	return ""
 }
 
-func delRememberMeToken(c *gin.Context) {
+func deleteRememberMeToken(c *gin.Context) {
 	c.SetCookie(rememberCookieName, "", -1, "/", "", false, true)
 }
 
@@ -52,23 +52,23 @@ func LoginSession(c *gin.Context, user *model.User) {
 
 func LogoutSession(c *gin.Context) {
 	utils.DeleteSession(c, conf.Serverconfig.SessionKey)
-	delRememberMeToken(c)
+	deleteRememberMeToken(c)
 }
 
 func getCurrentUserFromSession(c *gin.Context) (*model.User, error) {
 	rememberMeToken := getRememberMeTokenFromCookie(c)
 	if rememberMeToken != "" {
-		if user, err := modle.GetUserByRememberMeToken(rememberMeToken); err == nil {
+		if user, err := model.GetUserByRememberMeToken(rememberMeToken); err == nil {
 			LoginSession(c, user)
 			return user, nil
 		}
-		delRememberMeToken(c)
+		deleteRememberMeToken(c)
 	}
-	idStr := utils.GetSession(c, conf.Serverconfig.SessionKey)
-	if idStr == "" {
+	idstr := utils.GetSession(c, conf.Serverconfig.SessionKey)
+	if idstr == "" {
 		return nil, errors.New("没有获取到 session")
 	}
-	id, err := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idstr)
 	if err != nil {
 		return nil, err
 	}
@@ -113,10 +113,10 @@ func GetUserFromContext(c *gin.Context) (*model.User, error) {
 // 从 context 或者数据库中获取用户
 func GetUserFromContextOrDataBase(c *gin.Context, id int) (*model.User, error) {
 	// 当前用户存在并且就是想要获取的那个用户
-	currentUser, err := GetUserFromContext(c)
-	if currentUser != nil && err == nil {
-		if int(currentUser.ID) == id {
-			return currentUser, nil
+	ctxuser, err := GetUserFromContext(c)
+	if ctxuser != nil && err == nil {
+		if int(ctxuser.ID) == id {
+			return ctxuser, nil
 		}
 	}
 	// 获取的是其他指定 id 的用户

@@ -1,4 +1,4 @@
-package utils
+package mail
 
 import (
 	"bytes"
@@ -41,7 +41,7 @@ func (mail *Mail) sendBySMTP() error {
 }
 
 // 读取模板并转换为 string
-func ReadTemplateToString(tplName string, tplPath string, tplData map[string]interface{}) (string, error) {
+func TemplateToString(tplName, tplPath string, tplData map[string]interface{}) (string, error) {
 	tpl, err := template.New(tplName).ParseFiles(tplPath)
 	if err != nil {
 		return "", err
@@ -53,10 +53,10 @@ func ReadTemplateToString(tplName string, tplPath string, tplData map[string]int
 	return buffer.String(), nil
 }
 
-func SendMail(receiver []string, title string, templatePath string, tplData map[string]interface{}) error {
-	filePath := "views/" + templatePath
+func SendMail(receiver []string, title, tplPath string, tplData map[string]interface{}) error {
+	filePath := "views/" + tplPath
 	port, _ := strconv.Atoi(conf.Mailconfig.MailPort)
-	content, _ := ReadTemplateToString(templatePath, filePath, tplData)
+	content, _ := TemplateToString(tplPath, filePath, tplData)
 	mail := &Mail{
 		Driver:   conf.Mailconfig.MailDriver,
 		Host:     conf.Mailconfig.MailHost,
@@ -77,5 +77,5 @@ func (mail *Mail) Send() error {
 	} else if mail.Driver == "smtp" {
 		return mail.sendBySMTP()
 	}
-	return errors.New("不支持的 MailDriver 类型: " + mail.Driver)
+	return errors.New("不支持: " + mail.Driver + " 类型的 MailDriver。")
 }

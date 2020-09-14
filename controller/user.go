@@ -41,6 +41,11 @@ func RegisterPost(c *gin.Context) {
 		res["message"] = "Username already exists."
 		return
 	}
+	// if err := sendConfirmEmail(user); err != nil {
+	// 	flash.NewDangerFlash(c, "验证邮件发送失败: "+err.Error())
+	// } else {
+	// 	flash.NewSuccessFlash(c, "验证邮件已发送到你的注册邮箱上，请注意查收。")
+	// }
 	res["succeed"] = true
 	c.Redirect(http.StatusSeeOther, "/login")
 }

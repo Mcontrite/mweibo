@@ -12,8 +12,8 @@ import (
 // 从 cookie 中获取 csrf token，没有则设置
 func getCsrfTokenFromCookie(c *gin.Context) (token string) {
 	csrfparam := conf.Serverconfig.CsrfParamName
-	if s, err := c.Request.Cookie(csrfparam); err == nil {
-		token = s.Value
+	if v, err := c.Request.Cookie(csrfparam); err == nil {
+		token = v.Value
 	}
 	if token == "" {
 		token = string(utils.CreateRandomBytes(32))

@@ -25,7 +25,7 @@ func main() {
 		&model.Comment{},
 		&model.Tag{},
 		&model.TagWeibo{},
-		&model.PwdReset{},
+		&model.PasswordReset{},
 		&model.Attach{},
 	)
 	defer db.Close()
@@ -35,6 +35,8 @@ func main() {
 	g.Run(fmt.Sprintf(":%d", conf.Serverconfig.ServerPort))
 }
 
+// v.(string) *user解指针
+////////////////////////////////////////////////////////
 // log mail csrf passwordreset pagination
 // group image upload attach favorite ip
 // myweibos captcha auth admin collections likes

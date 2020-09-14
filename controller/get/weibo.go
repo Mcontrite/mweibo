@@ -20,7 +20,7 @@ func CreateWeiboGET(c *gin.Context) {
 
 func DisplayWeibo(c *gin.Context) {
 	weiboID, _ := strconv.Atoi(c.Param("id"))
-	weibo, err := model.GetWeiboByID(weiboID)
+	weibo, err := model.GetWeiboObjectByID(weiboID)
 	if err != nil {
 		c.HTML(http.StatusNotFound, "error/error.html", gin.H{})
 		return
@@ -44,7 +44,7 @@ func DisplayWeibo(c *gin.Context) {
 
 func UpdateWeiboGET(c *gin.Context) {
 	weiboID, _ := strconv.Atoi(c.Param("id"))
-	weibo, _ := model.GetWeiboByID(weiboID)
+	weibo, _ := model.GetWeiboObjectByID(weiboID)
 	// fcomment, _ := model.GetWeiboFirstCommentByTid(weiboID)
 	islogin := userservice.IsLogin(c)
 	sessions := userservice.GetSessions(c)

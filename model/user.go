@@ -25,10 +25,11 @@ func CreateUser(user *User) error {
 	// return DB.Create(user).Error
 }
 
-// func (user *User) UpdateUser()(err error){
-// 	return DB.Save(&user).Error
-// }
-func UpdateUser(maps interface{}, items map[string]interface{}) (err error) {
+func (user *User) UpdateUser() (err error) {
+	return DB.Save(&user).Error
+}
+
+func UpdateUserByMap(maps interface{}, items map[string]interface{}) (err error) {
 	err = DB.Model(&User{}).Where(maps).Updates(items).Error
 	return
 }
@@ -64,20 +65,21 @@ func IfUsernameExist(username string) bool {
 	return false
 }
 
-func GetUser(maps interface{}) (user User, err error) {
+func GetUserByMaps(maps interface{}) (user User, err error) {
 	err = DB.Model(&User{}).Where(maps).First(&user).Error
 	return
 }
 
-// func GetUserByID(id int) (user *User, err error) {
-// 	err = DB.First(&user, id).Error
-// 	return
-// }
 // func GetUserByID(id interface{}) (user *User, err error) {
 // 	err = DB.First(&user, id).Error
 // 	return
 // }
-func GetUserByID(id int) (user User, err error) {
+func GetUserByID(id int) (user *User, err error) {
+	err = DB.First(&user, id).Error
+	return
+}
+
+func GetUserObjectByID(id int) (user User, err error) {
 	err = DB.Model(&User{}).Where("id=?", id).First(&user).Error
 	return
 }
@@ -108,9 +110,15 @@ func GetUserByRememberMeToken(token string) (user *User, err error) {
 	return
 }
 
-func GetUserByWeiboID(id int) (user User, err error) {
+func GetUserByWeiboID(id int) (user *User, err error) {
 	weibo, _ := GetWeiboByID(id)
 	user, _ = GetUserByID(int(weibo.UserID))
+	return
+}
+
+func GetUserObjectByWeiboID(id int) (user User, err error) {
+	weibo, _ := GetWeiboObjectByID(id)
+	user, _ = GetUserObjectByID(int(weibo.UserID))
 	return
 }
 
@@ -125,12 +133,12 @@ func GetUsers(limit int, order string, maps interface{}) (user []User, err error
 	return
 }
 
-func (user *User) GetUserAvatar() string {
-	if user.Avatar != "" {
-		return user.Avatar
-	}
-	return ""
-}
+// func (user *User) GetUserAvatar() string {
+// 	if user.Avatar != "" {
+// 		return user.Avatar
+// 	}
+// 	return ""
+// }
 
 func CountUsers() (count int) {
 	DB.Model(&User{}).Count(&count)

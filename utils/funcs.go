@@ -59,10 +59,10 @@ func Minus(a1, a2 int) int {
 
 // 简单的解析模板方法
 func ParseEasyTemplate(tplString string, data map[string]string) string {
-	replaceArr := []string{}
+	sli := []string{}
 	for k, v := range data {
-		replaceArr = append(replaceArr, k, v)
+		sli = append(sli, k, v)
 	}
-	r := strings.NewReplacer(replaceArr...)
+	r := strings.NewReplacer(sli...)
 	return r.Replace(tplString)
 }

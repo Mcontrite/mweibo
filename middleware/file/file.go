@@ -103,9 +103,9 @@ func ReadFile(filePath string) (string, error) {
 		return "", err
 	}
 	defer f.Close()
-	bs, err := ioutil.ReadAll(f)
+	data, err := ioutil.ReadAll(f)
 	if err != nil {
 		return "", err
 	}
-	return string(bs), nil
+	return string(data), nil
 }

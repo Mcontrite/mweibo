@@ -27,16 +27,18 @@ func DeletePwrtByEmail(email string) (err error) {
 	return
 }
 
+//func (pwrt *PasswordReset) DeletePwrtByToken(token string) (err error) {
 func DeletePwrtByToken(token string) (err error) {
 	pwrt := &PasswordReset{}
 	err = DB.Where("token=?", token).Delete(&pwrt).Error
 	return
 }
 
-func (pwrt *PasswordReset) Create() (err error) {
+func (pwrt *PasswordReset) CreatePwrt() (err error) {
 	token := string(utils.CreateRandomBytes(30))
 	// 如果已经存在则先删除
 	oldpwrt, _ := GetPwrtByEmail(pwrt.Email)
+	// err = pwrt.DeletePwrtByEmail(oldpwrt.Email)
 	err = DeletePwrtByEmail(oldpwrt.Email)
 	pwrt.Token = token
 	err = DB.Create(&pwrt).Error

@@ -24,6 +24,8 @@ func CreateWeiboPOST(c *gin.Context) {
 	// 	attachfiles = strings.Split(attachFileString, ",")
 	// 	filesNum = len(attachfiles)
 	// }
+
+	// 微博内容、长度验证
 	uid, _ := strconv.Atoi(utils.GetSession(c, "userid"))
 	// uip := c.ClientIP()
 	weibo := &model.Weibo{
@@ -62,12 +64,16 @@ func DeleteWeibo(c *gin.Context) {
 	weibo := &model.Weibo{}
 	weibo.ID = uint(weiid)
 	uid, _ := strconv.Atoi(utils.GetSession(c, "userid"))
-	oldWeibo, _ := model.GetWeiboByID(int(weiid))
+	oldWeibo, _ := model.GetWeiboObjectByID(int(weiid))
 	if oldWeibo.UserID != uint(uid) {
 		code = utils.UNPASS
 		utils.ResponseJSONError(c, code)
 		return
 	}
+	// // 权限判断
+	// if ok := policies.StatusPolicyDestroy(c, currentUser, status); !ok {
+	// 	return
+	// }
 	err := model.DeleteWeibo(weibo)
 	if err != nil {
 		code = utils.ERROR
@@ -90,7 +96,7 @@ func UpdateWeiboPOST(c *gin.Context) {
 	uid, _ := strconv.Atoi(utils.GetSession(c, "userid"))
 	// uip := c.ClientIP()
 	code := utils.SUCCESS
-	oldWeibo, err := model.GetWeiboByID(weibo_id)
+	oldWeibo, err := model.GetWeiboObjectByID(weibo_id)
 	if err != nil {
 		code = utils.ERROR_UNFIND_DATA
 		utils.ResponseJSONError(c, code)

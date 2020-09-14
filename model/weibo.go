@@ -68,28 +68,16 @@ func (weibo *Weibo) DeleteWeiboByID(id int) error {
 	return nil
 }
 
-func CountWeibos() (count int) {
-	DB.Model(&Weibo{}).Count(&count)
-	return
-}
-
-func CountWeibosByTag(tag string) (count int, err error) {
-	if tag != "" {
-		tagid, _ := strconv.ParseUint(tag, 10, 64)
-		err = DB.Raw("select count(*) from weibos w inner join tag_weibos tw on "+
-			"w.id=tw.weibo_id where tw.tag_id=?", tagid,
-		).Row().Scan(&count)
-	} else {
-		err = DB.Raw("select count(*) from weibos").Row().Scan(&count)
-	}
-	return
-}
-
 // func GetWeiboByID(id interface{}) (weibo *Weibo, err error) {
 // 	err = DB.First(&weibo,"id=?", id).Error
 // 	return
 // }
-func GetWeiboByID(id int) (weibo Weibo, err error) {
+func GetWeiboByID(id int) (weibo *Weibo, err error) {
+	err = DB.First(&weibo, id).Error
+	return
+}
+
+func GetWeiboObjectByID(id int) (weibo Weibo, err error) {
 	//err = DB.Preload("User").Where("id = ?", id).Model(&Weibo{}).First(&weibo).Error
 	//err = DB.First(&weibo, id).Error
 	err = DB.Where("id = ?", id).Model(&Weibo{}).First(&weibo).Error
@@ -194,6 +182,11 @@ func GetWeibosByIDs(ids []string) (weibos []*Weibo, err error) {
 	return
 }
 
+func CountWeibos() (count int) {
+	DB.Model(&Weibo{}).Count(&count)
+	return
+}
+
 func CountUserWeibos(userid int) (count int, err error) {
 	err = DB.Model(&Weibo{}).Where("user_id=?", userid).Count(&count).Error
 	return
@@ -209,5 +202,17 @@ func CountUsersWeibos(ids []uint) (count int, err error) {
 	}
 	sqlstr += ")"
 	err = DB.Raw(sqlstr).Count(&count).Error
+	return
+}
+
+func CountWeibosByTag(tag string) (count int, err error) {
+	if tag != "" {
+		tagid, _ := strconv.ParseUint(tag, 10, 64)
+		err = DB.Raw("select count(*) from weibos w inner join tag_weibos tw on "+
+			"w.id=tw.weibo_id where tw.tag_id=?", tagid,
+		).Row().Scan(&count)
+	} else {
+		err = DB.Raw("select count(*) from weibos").Row().Scan(&count)
+	}
 	return
 }

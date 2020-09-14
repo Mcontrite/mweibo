@@ -8,10 +8,10 @@ import (
 )
 
 // 存储上次表单 post 的数据
-func SaveOldFormValue(c *gin.Context, obj map[string]string) {
-	f := CreateFlashByName("oldForm")
-	f.Data = obj
-	f.save(c, "oldForm")
+func SaveOldFormValue(c *gin.Context, m map[string]string) {
+	flash := CreateFlashByName("oldForm")
+	flash.Data = m
+	flash.save(c, "oldForm")
 }
 
 // 读取上次表单 post 的数据
@@ -39,17 +39,17 @@ func SaveOldForm() gin.HandlerFunc {
 
 // 存储参数验证的错误信息
 func SaveValidateMessage(c *gin.Context, sli []string) {
-	f := CreateFlashByName("validateMessage")
-	f.Data = map[string]string{"errors": strings.Join(sli, "$$|$$")}
-	f.save(c, "validateMessage")
+	flash := CreateFlashByName("validateMessage")
+	flash.Data = map[string]string{"errors": strings.Join(sli, "$$|$$")}
+	flash.save(c, "validateMessage")
 }
 
 // 读取参数验证的错误信息
 func ReadValidateMessage(c *gin.Context) []string {
-	errorStr := read(c, "validateMessage").Data["errors"]
-	if errorStr == "" {
+	errstr := read(c, "validateMessage").Data["errors"]
+	if errstr == "" {
 		return []string{}
 	}
 	// 不做上面的判断，Split 切分空字符串会得 [""]
-	return strings.Split(errorStr, "$$|$$")
+	return strings.Split(errstr, "$$|$$")
 }

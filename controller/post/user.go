@@ -5,7 +5,6 @@ import (
 	"mweibo/model"
 	userservice "mweibo/service/user"
 	"mweibo/utils"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -75,11 +74,10 @@ func LoginPOST(c *gin.Context) {
 	// 	validator.VErrorMsg(c, valid, code)
 	// 	return
 	// }
-	// 2，验证邮箱和密码
 	maps := make(map[string]interface{})
 	data := make(map[string]interface{})
 	maps["username"] = username
-	user, err := model.GetUser(maps)
+	user, err := model.GetUserByMaps(maps)
 	if err != nil {
 		code = utils.ERROR_NOT_EXIST_USER
 		utils.ResponseJSONOK(c, code, data)
@@ -93,6 +91,7 @@ func LoginPOST(c *gin.Context) {
 	// 	return
 	// }
 
+	// 2，验证邮箱和密码
 	// user, errors := userLoginForm.ValidateAndGetUser(c)
 	// if !user.IsActivated() {
 	// 	flash.NewWarningFlash(c, "你的账号未激活，请检查邮箱中的注册邮件进行激活。")
@@ -133,29 +132,6 @@ func RefreshToken(c *gin.Context) {
 	data["exp_time"] = time
 	code := utils.SUCCESS
 	utils.ResponseJSONOK(c, code, data)
-}
-
-// 邮箱验证、用户激活
-func ConfirmEmail(c *gin.Context) {
-	token := c.Param("token")
-	user, err := model.GetUserByActiveToken(token)
-	if user == nil || err != nil {
-		//controllers.Render404(c)
-		return
-	}
-	// 更新用户
-	user.IsActive = true
-	user.ActiveToken = ""
-	// if err = user.Update(false); err != nil {
-	// 	flash.NewSuccessFlash(c, "用户激活失败: "+err.Error())
-	// 	controllers.RedirectRouter(c, "root")
-	// 	return
-	// }
-	var sok chan int = make(chan int, 1)
-	go userservice.LoginSession(c, user, sok)
-	//flash.NewSuccessFlash(c, "恭喜你，激活成功！")
-	//controllers.RedirectRouter(c, "users.show", user.ID)
-	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
 // func GetUser(c *gin.Context) {
@@ -299,4 +275,32 @@ func ConfirmEmail(c *gin.Context) {
 // 	}
 // 	session.SetSession(c, "username", userName)
 // 	utils.JsonOkResponse(c, code, nil)
+// }
+////////////////////////////////////GinWeibo///////////////////////////////////////////////
+
+// // 编辑用户
+// func UpdateUserPOST(c *gin.Context, currentUser *userModel.User) {
+// 	id, err := controllers.GetIntParam(c, "id")
+// 	if err != nil {
+// 		controllers.Render404(c)
+// 		return
+// 	}
+// 	// 只能更新自己
+// 	if ok := policies.UserPolicyUpdate(c, currentUser, id); !ok {
+// 		return
+// 	}
+// 	// 验证参数和更新用户
+// 	userUpdateForm := &userRequest.UserUpdateForm{
+// 		Name:                 c.PostForm("name"),
+// 		Password:             c.PostForm("password"),
+// 		PasswordConfirmation: c.PostForm("password_confirmation"),
+// 	}
+// 	errors := userUpdateForm.ValidateAndSave(currentUser)
+// 	if len(errors) != 0 {
+// 		flash.SaveValidateMessage(c, errors)
+// 		controllers.RedirectRouter(c, "users.edit", currentUser.ID)
+// 		return
+// 	}
+// 	flash.NewSuccessFlash(c, "个人资料更新成功！")
+// 	controllers.RedirectRouter(c, "users.show", currentUser.ID)
 // }

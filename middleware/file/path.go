@@ -2,7 +2,8 @@ package file
 
 import (
 	"math/rand"
-	timepkg "mweibo/middleware/time"
+	//timepkg "mweibo/middleware/time"
+	"mweibo/utils"
 	"os"
 	"strconv"
 	"time"
@@ -32,7 +33,8 @@ func CreatePathInToday(pathName string) (pathInToday string, err error) {
 	if err != nil {
 		return
 	}
-	today := timepkg.TimeFormat("Ymd")
+	//today := timepkg.TimeFormat("Ymd")
+	today := utils.TimeFormat("Ymd")
 	pathInToday = pathName + "/" + today
 	fileExist, _ := PathExists(pathInToday)
 	if !fileExist {
