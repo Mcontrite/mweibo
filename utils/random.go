@@ -2,7 +2,9 @@ package utils
 
 import (
 	"crypto/rand"
+	"fmt"
 	r "math/rand"
+	"strings"
 	"time"
 )
 
@@ -33,4 +35,14 @@ func CreateRandomInt(min, max int) int {
 		return max
 	}
 	return r.Intn(max-min) + min
+}
+
+func GenRandCode(width int) string {
+	numeric := [10]byte{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+	r.Seed(time.Now().UnixNano())
+	var sb strings.Builder
+	for i := 0; i < width; i++ {
+		fmt.Fprintf(&sb, "%d", numeric[r.Intn(len(numeric))])
+	}
+	return sb.String()
 }

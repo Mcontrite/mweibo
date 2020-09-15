@@ -2,9 +2,13 @@ package validate
 
 import (
 	"mweibo/utils"
+	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/astaxie/beego/validation"
+	"github.com/gin-gonic/gin"
 )
 
 type (
@@ -83,4 +87,16 @@ func ValidateEmail(value string) ValidateFunc {
 		}
 		return ""
 	}
+}
+
+func VErrorMsg(c *gin.Context, v *validation.Validation, code int) {
+	vmsg := make(map[string]interface{})
+	for _, err := range v.Errors {
+		vmsg[err.Key] = err.Message
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  utils.CodeToMessage(code),
+		"data": vmsg,
+	})
 }

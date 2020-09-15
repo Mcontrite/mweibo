@@ -6,10 +6,11 @@ import (
 
 type Comment struct {
 	gorm.Model
-	UserID  uint   `gorm:"default:0" json:"user_id"`
-	WeiboID uint   `gorm:"default:0" json:"weibo_id"`
-	Content string `gorm:"default:''" json:"content"`
-	IsRead  bool   `gorm:"default:0" json:"isread"`
+	UserID     uint   `gorm:"default:0" json:"user_id"`
+	WeiboID    uint   `gorm:"default:0" json:"weibo_id"`
+	Content    string `gorm:"default:''" json:"content"`
+	IsRead     bool   `gorm:"default:0" json:"isread"`
+	AttachsCnt int    `gorm:"default:0" json:"attachs_cnt"`
 	// ImageURL
 	User   User
 	Weibo  Weibo
@@ -20,20 +21,28 @@ func CreateComment(comment *Comment) error {
 	return DB.Create(&comment).Error
 }
 
+func UpdateCommentByID(id int, comment Comment) (newcommentt Comment, err error) {
+	err = DB.Model(&Comment{}).Where("id = ?", id).Updates(comment).Error
+	newcommentt, err = GetCommentByID(id)
+	return
+}
+
+func UpdateCommentAttachsCnt(id int, num int) error {
+	return DB.Model(&Comment{}).Where("id=?", id).Update("attachs_cnt", num).Error
+}
+
 func DeleteComment(comment *Comment) error {
 	return DB.Delete(comment, "user_id=? and id=?", comment.UserID, comment.ID).Error
 }
 
-func SetCommentRead(comment *Comment) error {
-	return DB.Model(&comment).Updates(map[string]interface{}{
-		"is_read": true,
-	}).Error
+func DeleteCommentsByWeiboIDs(ids []string) (err error) {
+	err = DB.Unscoped().Where("weibo_id in (?)", ids).Delete(&Comment{}).Error
+	return
 }
 
-func SetAllCommentsRead() error {
-	return DB.Model(&Comment{}).Where("is_read=?", false).Updates(map[string]interface{}{
-		"is_read": true,
-	}).Error
+func GetCommentByID(id int) (comment Comment, err error) {
+	err = DB.Model(&Comment{}).Where("id=?", id).First(&comment).Error
+	return
 }
 
 // func ListCommentsByWeiboID(weiboid string) (comments []*Comment, err error) {
@@ -58,7 +67,7 @@ func SetAllCommentsRead() error {
 // 	return
 // }
 func ListCommentsByWeiboID(id int, limit int) (comment []Comment, err error) {
-	err = DB.Preload("User").Model(&Comment{}).Where("weibo_id=?", id).Limit(limit).Find(&comment).Error
+	err = DB.Preload("User").Preload("Attach").Model(&Comment{}).Where("weibo_id=?", id).Limit(limit).Find(&comment).Error
 	return
 }
 
@@ -67,15 +76,16 @@ func ListUnReadComments() (comments []*Comment, err error) {
 	return comments, err
 }
 
-func GetCommentByID(id int) (comment Comment, err error) {
-	err = DB.Model(&Comment{}).Where("id = ?", id).First(&comment).Error
-	return
+func SetCommentRead(comment *Comment) error {
+	return DB.Model(&comment).Updates(map[string]interface{}{
+		"is_read": true,
+	}).Error
 }
 
-func UpdateComment(id int, comment Comment) (newcommentt Comment, err error) {
-	err = DB.Model(&Comment{}).Where("id = ?", id).Updates(comment).Error
-	newcommentt, err = GetCommentByID(id)
-	return
+func SetAllCommentsRead() error {
+	return DB.Model(&Comment{}).Where("is_read=?", false).Updates(map[string]interface{}{
+		"is_read": true,
+	}).Error
 }
 
 func CountComments() (count int) {

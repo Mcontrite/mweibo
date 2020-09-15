@@ -16,10 +16,12 @@ type Weibo struct {
 	Content     string `gorm:"type:text;not null" json:"content"`
 	ViewsCnt    int    `gorm:"default:0" json:"viewscnt"`
 	CommentsCnt int    `gorm:"default:0" json:"commentscnt"`
+	AttachsCnt  int    `gorm:"default:0" json:"attachs_cnt"`
 	User        User
 	Tags        []*Tag
 	Comments    []*Comment
 	Attach      []Attach
+	// FavouriteCnt int       `gorm:"default:0" json:"favourite_cnt"`
 }
 
 // func CreateWeibo(weibo *Weibo) (*Weibo, error) {
@@ -32,12 +34,9 @@ func CreateWeibo(weibo *Weibo) error {
 
 // func UpdateWeibo(id int, weibo Weibo) (upweibo Weibo, err error) {
 // 	err = DB.Model(&Weibo{}).Where("id = ?", id).Updates(weibo).Error
-// 	upweibo, err = GetWeiboById(id)
-// 	return
-// }
 // func UpdateWeiboPro(id int, items map[string]interface{}) (upweibo Weibo, err error) {
 // 	err = DB.Model(&Weibo{}).Where("id = ?", id).Updates(items).Error
-// 	upweibo, err = GetWeiboById(id)
+// 	upweibo, err = GetWeiboObjectByID(id)
 // 	return
 // }
 func UpdateWeibo(weibo *Weibo, id string) error {
@@ -52,10 +51,15 @@ func UpdateWeiboViewsCnt(weibo *Weibo) error {
 	}).Error
 }
 
-// func DelWeibo(ids []string) (err error) {
-// 	err = DB.Unscoped().Where("id in (?)", ids).Delete(&Weibo{}).Error
-// 	return
-// }
+func UpdateWeiboViewsCntByID(id int) error {
+	weibo, _ := GetWeiboObjectByID(id)
+	return DB.Model(&Weibo{}).Where("id=?", id).Update("views_cnt", weibo.ViewsCnt+1).Error
+}
+
+func UpdateWeiboAttachsCnt(id int, num int) error {
+	return DB.Model(&Weibo{}).Where("id=?", id).Update("attachs_cnt", num).Error
+}
+
 func DeleteWeibo(weibo *Weibo) error {
 	return DB.Delete(weibo).Error
 }
@@ -66,6 +70,11 @@ func (weibo *Weibo) DeleteWeiboByID(id int) error {
 		return err
 	}
 	return nil
+}
+
+func DelWeiboByIDs(ids []string) (err error) {
+	err = DB.Unscoped().Where("id in (?)", ids).Delete(&Weibo{}).Error
+	return
 }
 
 // func GetWeiboByID(id interface{}) (weibo *Weibo, err error) {
@@ -104,6 +113,16 @@ func GetAllWeibos(maps interface{}) (count int) {
 
 func GetWeibos(maps interface{}, order string, offset, limit int) (weibos []Weibo, err error) {
 	err = DB.Model(&Weibo{}).Preload("User").Where(maps).Order(order).Offset((offset - 1) * limit).Limit(limit).Find(&weibos).Error
+	return
+}
+
+func GetWeibosByIDs(ids []string) (weibos []*Weibo, err error) {
+	err = DB.Model(&Weibo{}).Preload("User").Where("id in (?)", ids).Find(&weibos).Error
+	return
+}
+
+func ListWeibosObject() (weibos []Weibo, err error) {
+	err = DB.Preload("User").Model(&Weibo{}).Order("updated_at desc").Limit(6).Find(&weibos).Error
 	return
 }
 
@@ -174,11 +193,6 @@ func ListUsersWeibos(ids []uint, offset, limit int) (weibos []*Weibo, err error)
 	}
 	sqlstr += fmt.Sprintf(") order by `created_at` desc limit %d offset %d", limit, offset)
 	err = DB.Raw(sqlstr).Scan(&weibos).Error
-	return
-}
-
-func GetWeibosByIDs(ids []string) (weibos []*Weibo, err error) {
-	err = DB.Model(&Weibo{}).Preload("User").Where("id in (?)", ids).Find(&weibos).Error
 	return
 }
 

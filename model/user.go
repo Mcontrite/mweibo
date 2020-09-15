@@ -29,7 +29,7 @@ func (user *User) UpdateUser() (err error) {
 	return DB.Save(&user).Error
 }
 
-func UpdateUserByMap(maps interface{}, items map[string]interface{}) (err error) {
+func UpdateUserByMaps(maps interface{}, items map[string]interface{}) (err error) {
 	err = DB.Model(&User{}).Where(maps).Updates(items).Error
 	return
 }
@@ -51,7 +51,7 @@ func (user *User) DeleteUser(id int) error {
 	return DB.Unscoped().Delete(&user).Error
 }
 
-func DelUser(maps interface{}) (err error) {
+func DeleteUserByMaps(maps interface{}) (err error) {
 	err = DB.Unscoped().Where(maps).Delete(&User{}).Error
 	return
 }
@@ -65,11 +65,6 @@ func IfUsernameExist(username string) bool {
 	return false
 }
 
-func GetUserByMaps(maps interface{}) (user User, err error) {
-	err = DB.Model(&User{}).Where(maps).First(&user).Error
-	return
-}
-
 // func GetUserByID(id interface{}) (user *User, err error) {
 // 	err = DB.First(&user, id).Error
 // 	return
@@ -81,6 +76,11 @@ func GetUserByID(id int) (user *User, err error) {
 
 func GetUserObjectByID(id int) (user User, err error) {
 	err = DB.Model(&User{}).Where("id=?", id).First(&user).Error
+	return
+}
+
+func GetUserObjectByMaps(maps interface{}) (user User, err error) {
+	err = DB.Model(&User{}).Where(maps).First(&user).Error
 	return
 }
 
@@ -122,14 +122,14 @@ func GetUserObjectByWeiboID(id int) (user User, err error) {
 	return
 }
 
-func ListUsers() (users []*User, err error) {
-	//err = DB.Find(&users, "is_admin=?", true).Error
-	err = DB.Order("id").Find(&users).Error
+func GetUsers(limit int, order string, maps interface{}) (user []User, err error) {
+	err = DB.Model(&User{}).Order(order).Limit(limit).Find(&user).Error
 	return
 }
 
-func GetUsers(limit int, order string, maps interface{}) (user []User, err error) {
-	err = DB.Model(&User{}).Order(order).Limit(limit).Find(&user).Error
+func ListUsers() (users []*User, err error) {
+	//err = DB.Find(&users, "is_admin=?", true).Error
+	err = DB.Order("id").Find(&users).Error
 	return
 }
 

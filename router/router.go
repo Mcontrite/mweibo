@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"html/template"
 	"mweibo/conf"
 	ctrget "mweibo/controller/get"
@@ -11,7 +10,6 @@ import (
 	gwservice "mweibo/service/gwsession"
 	"mweibo/utils"
 	"net/http"
-	"strings"
 
 	limit "github.com/aviddiviner/gin-limit"
 
@@ -163,58 +161,4 @@ func Admin() gin.HandlerFunc {
 // 	session.Set(ctr.SESSION_CAPTCHA, data)
 // 	session.Save()
 // 	captcha.WriteImage(c.Writer, data, 100, 40)
-// }
-
-func Cors() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		method := c.Request.Method
-		origin := c.Request.Header.Get("Origin")
-		var headerKeys []string
-		for k, _ := range c.Request.Header {
-			headerKeys = append(headerKeys, k)
-		}
-		headerStr := strings.Join(headerKeys, ", ")
-		if headerStr != "" {
-			headerStr = fmt.Sprintf("access-control-allow-origin, access-control-allow-headers, %s", headerStr)
-		} else {
-			headerStr = "access-control-allow-origin, access-control-allow-headers"
-		}
-		if origin != "" {
-			c.Header("Access-Control-Allow-Origin", "*")
-			c.Header("Access-Control-Allow-Headers", headerStr)
-			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-			c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-			c.Header("Access-Control-Allow-Credentials", "true")
-			c.Set("content-type", "application/json")
-		}
-		if method == "OPTIONS" {
-			c.JSON(http.StatusOK, "Options Request!")
-		}
-		c.Next()
-	}
-}
-
-// func XSS() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		xssToken := c.DefaultPostForm("xss_token", "")
-// 		if len(xssToken) == 0 {
-// 			c.JSON(200, gin.H{
-// 				"code":    401,
-// 				"message": "请提交xsstoken",
-// 			})
-// 			c.Abort()
-// 			return
-// 		}
-// 		_, err := redis.Get(xssToken)
-// 		if err == nil {
-// 			c.JSON(200, gin.H{
-// 				"code":    403,
-// 				"message": "已经提交过了，不要重复提交",
-// 			})
-// 			c.Abort()
-// 			return
-// 		}
-// 		redis.Set(xssToken, xssToken, 100)
-// 		c.Next()
-// 	}
 // }

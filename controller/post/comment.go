@@ -63,7 +63,7 @@ func CreateCommentPOST(c *gin.Context) {
 	// 			Filetype:    ftype,
 	// 			Filesize:    fsize,
 	// 		}
-	// 		model.AddAttach(attach)
+	// 		model.CreateAttach(attach)
 	// 	}
 	// }
 	//comment_service.AfterAddNewComment(newComment, weiboid)
@@ -93,7 +93,7 @@ func UpdateCommentPOST(c *gin.Context) {
 		// Doctype: doctype,
 		Content: content,
 	}
-	model.UpdateComment(comment_id, comment)
+	model.UpdateCommentByID(comment_id, comment)
 	utils.ResponseJSONOK(c, code, nil)
 }
 

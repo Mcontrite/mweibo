@@ -1,6 +1,7 @@
 package post
 
 import (
+	ctr "mweibo/controller"
 	"mweibo/middleware/flash"
 	"mweibo/middleware/validate"
 	"mweibo/model"
@@ -10,7 +11,7 @@ import (
 
 // 显示重置密码的邮箱发送页面
 func SendResetLinkEmailGET(c *gin.Context) {
-	c.HTML(c, "password/email.html", gin.H{})
+	ctr.Render(c, "password/email.html", gin.H{})
 }
 
 // 更新密码页面

@@ -27,6 +27,16 @@ type RedisConfig struct {
 
 var Redisconfig = &RedisConfig{}
 
+type ImageConfig struct {
+	ImageSavePath   string
+	ImageMaxSize    int
+	ImageAlloweXts  string
+	ImageAllowExts  []string
+	RuntimeRootPath string
+}
+
+var Imageconfig = &ImageConfig{}
+
 type MailConfig struct {
 	MailDriver   string
 	MailHost     string
@@ -65,5 +75,6 @@ func InitConfig() {
 	}
 	err = cfg.Section("DB").MapTo(DBconfig)
 	err = cfg.Section("REDIS").MapTo(Redisconfig)
+	err = cfg.Section("IMAGE").MapTo(Imageconfig)
 	err = cfg.Section("MAIL").MapTo(Mailconfig)
 }

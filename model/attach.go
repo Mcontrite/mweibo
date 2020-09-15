@@ -17,7 +17,7 @@ type Attach struct {
 	DownloadsCnt int    `gorm:"default:0" json:"downloads_cnt"` //下载次数
 }
 
-func AddAttach(attach *Attach) (*Attach, error) {
+func CreateAttach(attach *Attach) (*Attach, error) {
 	err := DB.Model(&Attach{}).Create(attach).Error
 	return attach, err
 }
@@ -32,11 +32,11 @@ func GetAttachsByCommentID(id int) (attachs []Attach, err error) {
 	return
 }
 
-func DeleteAttach(id int) error {
+func DeleteAttachByID(id int) error {
 	return DB.Model(&Attach{}).Where("id = ?", id).Unscoped().Delete(&Attach{}).Error
 }
 
-func DeleteWeibosAttachs(ids []string) (err error) {
+func DeleteWeibosAttachsByIDs(ids []string) (err error) {
 	err = DB.Unscoped().Where("weibo_id in (?)", ids).Delete(&Attach{}).Error
 	return
 }
