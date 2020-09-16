@@ -24,12 +24,13 @@ type Weibo struct {
 	// FavouriteCnt int       `gorm:"default:0" json:"favourite_cnt"`
 }
 
-// func CreateWeibo(weibo *Weibo) (*Weibo, error) {
-// 	err := DB.Model(&Weibo{}).Create(weibo).Error
-// 	return weibo, err
-// }
 func CreateWeibo(weibo *Weibo) error {
 	return DB.Create(weibo).Error
+}
+
+func NewWeibo(weibo *Weibo) (*Weibo, error) {
+	err := DB.Model(&Weibo{}).Create(weibo).Error
+	return weibo, err
 }
 
 // func UpdateWeibo(id int, weibo Weibo) (upweibo Weibo, err error) {
@@ -230,3 +231,24 @@ func CountWeibosByTag(tag string) (count int, err error) {
 	}
 	return
 }
+
+// func AfterAddNewArticle(article *model.Article) {
+// 	articleID := article.ID
+// 	userID := article.UserID
+// 	model.AddMyArticle(userID, int(articleID))
+// 	oldUserInfo, _ := model.GetUserByID(article.UserID)
+// 	model.UpdateUserArticlesCnt(article.UserID, oldUserInfo.ArticlesCnt+1)
+// }
+
+// func DelArticles(tids []string) (err error) {
+// 	err = model.DelReplysOfArticle(tids)
+// 	if err != nil {
+// 		return
+// 	}
+// 	err = model.DelMyArticlesOfArticle(tids)
+// 	err = model.DelMyReplysOfArticle(tids)
+// 	err = model.DelMyFavouritesOfArticle(tids)
+// 	err = model.DelAttachsOfArticle(tids)
+// 	err = model.DelArticle(tids)
+// 	return
+// }

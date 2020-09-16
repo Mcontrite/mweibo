@@ -1,10 +1,13 @@
 package post
 
 import (
+	"mweibo/middleware/file"
 	"mweibo/middleware/logging"
 	"mweibo/model"
 	"mweibo/utils"
+	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,56 +19,56 @@ func CreateCommentPOST(c *gin.Context) {
 	uid, _ := strconv.Atoi(utils.GetSession(c, "userid"))
 	// uip := c.ClientIP()
 	code := utils.SUCCESS
-	// attachFileString := c.PostForm("attachfiles")
-	// attachfiles := []string{}
-	// filesNum := 0
-	// if len(attachFileString) > 0 {
-	// 	attachfiles = strings.Split(attachFileString, ",")
-	// 	filesNum = len(attachfiles)
-	// }
+	attachFileString := c.PostForm("attachfiles")
+	attachfiles := []string{}
+	attachsCnt := 0
+	if len(attachFileString) > 0 {
+		attachfiles = strings.Split(attachFileString, ",")
+		attachsCnt = len(attachfiles)
+	}
 	comment := &model.Comment{
-		WeiboID: uint(weiboid),
-		UserID:  uint(uid),
-		Content: content,
+		WeiboID:    uint(weiboid),
+		UserID:     uint(uid),
+		Content:    content,
+		AttachsCnt: attachsCnt,
 		// Isfirst:    0,
 		// UserIP:     uip,
 		// Doctype:    docutype,
 		// Message:    message,
 		// MessageFmt: message,
-		// FilesNum:   filesNum,
+
 	}
-	err := model.CreateComment(comment)
-	//newComment, err := model.AddComment(comment)
+	newComment, err := model.NewComment(comment)
 	if err != nil {
 		logging.Info("回复入库错误", err.Error())
 		code = utils.ERROR_SQL_INSERT_FAIL
 		utils.ResponseJSONError(c, code)
 		return
 	}
-	// if len(attachFileString) > 0 {
-	// 	for _, attachfile := range attachfiles {
-	// 		file := strings.Split(attachfile, "|")
-	// 		fname := file[0]
-	// 		forginname := file[1]
-	// 		ftype := file_package.GetType(fname)
-	// 		ofile, err := os.Open(fname)
-	// 		defer ofile.Close()
-	// 		if err != nil {
-	// 			continue
-	// 		}
-	// 		fsize, _ := file_package.GetSize(ofile)
-	// 		attach := &model.Attach{
-	// 			WeiboID:   int(weiboid),
-	// 			CommentID:     int(newComment.ID),
-	// 			UserID:      uid,
-	// 			Filename:    fname,
-	// 			Orgfilename: forginname,
-	// 			Filetype:    ftype,
-	// 			Filesize:    fsize,
-	// 		}
-	// 		model.CreateAttach(attach)
-	// 	}
-	// }
+	if len(attachFileString) > 0 {
+		for _, attachfile := range attachfiles {
+			fileSli := strings.Split(attachfile, "|")
+			fname := fileSli[0]
+			origname := fileSli[1]
+			ftype := file.GetType(fname)
+			ofile, err := os.Open(fname)
+			defer ofile.Close()
+			if err != nil {
+				continue
+			}
+			fsize, _ := file.GetSize(ofile)
+			attach := &model.Attach{
+				WeiboID:   int(weiboid),
+				CommentID: int(newComment.ID),
+				UserID:    uid,
+				Filename:  fname,
+				OrigiName: origname,
+				Filetype:  ftype,
+				Filesize:  fsize,
+			}
+			model.CreateAttach(attach)
+		}
+	}
 	//comment_service.AfterAddNewComment(newComment, weiboid)
 	utils.ResponseJSONOK(c, code, nil)
 }

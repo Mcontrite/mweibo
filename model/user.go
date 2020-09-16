@@ -34,8 +34,22 @@ func UpdateUserByMaps(maps interface{}, items map[string]interface{}) (err error
 	return
 }
 
+func UpdateUserNameByID(newName string, id int) (err error) {
+	var m = make(map[string]interface{})
+	m["id"] = id
+	err = UpdateUserByMaps(m, map[string]interface{}{"username": newName})
+	return
+}
+
 func UpdateUserAvatar(user *User, avatar string) error {
 	return DB.Model(&user).Update(User{Avatar: avatar}).Error
+}
+
+func UpdateUserAvatarByID(newAvatar string, id int) (err error) {
+	var m = make(map[string]interface{})
+	m["id"] = id
+	err = UpdateUserByMaps(m, map[string]interface{}{"avatar": "/" + newAvatar})
+	return
 }
 
 func UpdateUserEmail(user *User, email string) error {
@@ -45,7 +59,7 @@ func UpdateUserEmail(user *User, email string) error {
 	return DB.Model(user).Update("email", gorm.Expr("NULL")).Error
 }
 
-func (user *User) DeleteUser(id int) error {
+func (user *User) DeleteUserByID(id int) error {
 	user.ID = uint(id)
 	// Unscoped 永久删除
 	return DB.Unscoped().Delete(&user).Error
@@ -142,5 +156,12 @@ func ListUsers() (users []*User, err error) {
 
 func CountUsers() (count int) {
 	DB.Model(&User{}).Count(&count)
+	return
+}
+
+func ResetPasswordByID(newPassword string, id int) (err error) {
+	var m = make(map[string]interface{})
+	m["id"] = id
+	err = UpdateUserByMaps(m, map[string]interface{}{"password": newPassword})
 	return
 }

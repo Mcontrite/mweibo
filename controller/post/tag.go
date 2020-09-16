@@ -2,6 +2,7 @@ package post
 
 import (
 	"mweibo/model"
+	userservice "mweibo/service/user"
 	"net/http"
 	"strconv"
 
@@ -17,10 +18,19 @@ func writeJSON(c *gin.Context, h gin.H) {
 	c.JSON(http.StatusOK, h)
 }
 
+func CreateTagsGET(c *gin.Context) {
+	islogin := userservice.IsLogin(c)
+	sessions := userservice.GetSessions(c)
+	c.HTML(http.StatusOK, "weibo/create.html", gin.H{
+		"islogin":  islogin,
+		"sessions": sessions,
+	})
+}
+
 func CreateTag(c *gin.Context) {
 	res := gin.H{}
 	defer writeJSON(c, res)
-	tagname := c.PostForm("tagname")
+	tagname := c.PostForm("tags")
 	tag := &model.Tag{
 		TagName: tagname,
 	}

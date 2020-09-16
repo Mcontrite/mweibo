@@ -33,6 +33,13 @@ func RegisterPost(c *gin.Context) {
 		Username: username,
 		Password: password,
 	}
+	// user_service.AddUserValid(valid, username, password)
+	// if valid.HasErrors() {
+	// 	fmt.Println("valid error")
+	// 	validator.VErrorMsg(c, valid, code)
+	// 	return
+	// }
+	// if !model.ExistUserByName(username) {
 	user.ActiveToken = string(utils.CreateRandomBytes(30))
 	user.RememberMeToken = string(utils.CreateRandomBytes(10))
 	//user.Password = utils.MD5(user.Username + user.Password)

@@ -89,14 +89,27 @@ func ValidateEmail(value string) ValidateFunc {
 	}
 }
 
-func VErrorMsg(c *gin.Context, v *validation.Validation, code int) {
-	vmsg := make(map[string]interface{})
-	for _, err := range v.Errors {
-		vmsg[err.Key] = err.Message
+func VlidErrorMsg(c *gin.Context, valid *validation.Validation, code int) {
+	m := make(map[string]interface{})
+	for _, v := range valid.Errors {
+		m[v.Key] = v.Message
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  utils.CodeToMessage(code),
-		"data": vmsg,
+		"data": m,
 	})
+}
+
+func ValidCaptchaKey(v *validation.Validation, cap_key string) {
+	v.Required(cap_key, "cap_key").Message("唯一key不能为空")
+}
+
+func ValidCaptcha(v *validation.Validation, captcha string) {
+	v.Required(captcha, "captcha").Message("验证码不能为空")
+}
+
+func UserCaptchaValid(v *validation.Validation, cap_key string, captcha string) {
+	ValidCaptchaKey(v, cap_key)
+	ValidCaptcha(v, captcha)
 }

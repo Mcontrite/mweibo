@@ -19,10 +19,13 @@ func registerApi(e *gin.Engine) {
 	e.GET("/logout", ctrget.LogoutGET)
 
 	//e.GET("weibo/:id", ctr.DisplayWeibo)
-	e.GET("tag/:tag", ctr.ListTags)
+	e.GET("/tag/:tag", ctr.ListTags)
 
-	e.GET("readweibo/:id", ctrget.DisplayWeibo)
-	e.GET("delweibo/:id", ctrpost.DeleteWeibo)
+	e.GET("/readweibo/:id", ctrget.DisplayWeibo)
+	e.GET("/delweibo/:id", ctrpost.DeleteWeibo)
+
+	e.GET("/createtags", ctrpost.CreateTagsGET)
+	e.POST("/createtags", ctrpost.CreateTag)
 
 	auth := e.Group("/auth")
 	// auth.Use(Auth())

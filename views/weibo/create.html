@@ -1,20 +1,20 @@
 {{define "weibo/create.html"}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Weibo</title>
-</head>
-<body>
-    {{template "header.html" .}}
+{{template "header.html" .}}
     {{if .islogin}}
-    <form action="" method="post" >
-        <input type="text" name="tags"><br/>
-        <textarea name="content"></textarea><br/>
-       <button type="submit">提交
+    <form action="/createtags" method="POST">
+        <input type="text" id="tags" name="tags"><br/>
+        <button type="submit">提交</button>
+    </form>
+
+    <span style="border: none" id="addTag" class="glyphicon glyphicon-edit"></span>
+    <form id="postForm" action="" method="post" >
+        <input type="text" id="tags" name="tags"><br/>
+        <textarea id="content" name="content"></textarea><br/>
+        <span id="tagBug">
+            <a id="postSave" class="glyphicon glyphicon-saved">保存</a>
+        </span>
+       <button type="submit">提交</button>
     </form>
     {{end}}
-</body>
-</html>
+    {{template "footer.html" }}
 {{end}}

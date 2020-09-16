@@ -4,10 +4,12 @@ import (
 	"html/template"
 	"mweibo/conf"
 	ctrget "mweibo/controller/get"
-	"mweibo/middleware/csrf"
+
+	//"mweibo/middleware/csrf"
 	"mweibo/middleware/flash"
 	"mweibo/middleware/logger"
-	gwservice "mweibo/service/gwsession"
+
+	//gwservice "mweibo/service/gwsession"
 	"mweibo/utils"
 	"net/http"
 
@@ -45,9 +47,9 @@ func setMiddleware(g *gin.Engine) {
 	g.Use(Cors())
 	g.Use(limit.MaxAllowed(100))
 	g.Use(logger.LoggerToFile())
-	g.Use(csrf.Csrf())
-	g.Use(flash.SaveOldForm())            // 记忆上次表单提交的内容
-	g.Use(gwservice.GetUserFromSession()) // 从 session 中获取用户
+	//g.Use(csrf.Csrf())
+	g.Use(flash.SaveOldForm()) // 记忆上次表单提交的内容
+	//g.Use(gwservice.GetUserFromSession()) // 从 session 中获取用户
 	//g.Use(setContext())
 }
 

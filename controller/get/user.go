@@ -2,10 +2,13 @@ package get
 
 import (
 	ctr "mweibo/controller"
+	"mweibo/middleware/jwt"
+	"mweibo/middleware/redis"
 	"mweibo/model"
 	userservice "mweibo/service/user"
 	"mweibo/utils"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,6 +36,40 @@ func LogoutGET(c *gin.Context) {
 	code := utils.SUCCESS
 	userservice.LogoutSession(c)
 	utils.ResponseJSONError(c, code)
+}
+
+func GetUser(c *gin.Context) {
+	err := redis.Lpush("reg:username", utils.GenRandCode(6)+"t@t.com", 5)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 1001,
+			"msg":  err,
+			"data": make(map[string]interface{}),
+		})
+		return
+	}
+	res, _ := redis.Brpop("reg:username")
+	if res == "" {
+		time.Sleep(time.Second * 3)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 1002,
+		"msg":  "pop",
+		"data": res,
+	})
+	return
+	maps := make(map[string]interface{})
+	data := make(map[string]interface{})
+	if name := c.Query("name"); name != "" {
+		maps["name"] = name
+		data["user"], _ = model.GetUserObjectByMaps(maps)
+	}
+	code := utils.SUCCESS
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  utils.CodeToMessage(code),
+		"data": data,
+	})
 }
 
 // 用户详情
@@ -82,6 +119,28 @@ func DisplayUser(c *gin.Context, ctxuser *model.User) {
 			"isFollowing":     isFollowing,
 			//"statusesLength":  statusesAllLength,
 		})
+}
+
+func RefreshToken(c *gin.Context) {
+	token := c.Query("token")
+	newToken, time, _ := jwt.RefreshToken(token)
+	data := make(map[string]interface{})
+	data["token"] = newToken
+	data["exp_time"] = time
+	code := utils.SUCCESS
+	utils.ResponseJSONOK(c, code, data)
+}
+
+func IfUsernameExist(c *gin.Context) {
+	name := c.DefaultQuery("username", "")
+	code := utils.SUCCESS
+	data := make(map[string]interface{})
+	if model.IfUsernameExist(name) {
+		data["is_used"] = 1
+	} else {
+		data["is_used"] = 0
+	}
+	utils.ResponseJSONOK(c, code, data)
 }
 
 // // 编辑用户页面

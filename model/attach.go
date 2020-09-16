@@ -22,12 +22,12 @@ func CreateAttach(attach *Attach) (*Attach, error) {
 	return attach, err
 }
 
-func GetAttachsByWeiboID(id int) (attachs []Attach, err error) {
+func ListAttachsByWeiboID(id int) (attachs []Attach, err error) {
 	err = DB.Model(&Attach{}).Where("weibo_id = ?", id).Find(&attachs).Error
 	return
 }
 
-func GetAttachsByCommentID(id int) (attachs []Attach, err error) {
+func ListAttachsByCommentID(id int) (attachs []Attach, err error) {
 	err = DB.Model(&Attach{}).Where("comment_id = ?", id).Find(&attachs).Error
 	return
 }

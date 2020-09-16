@@ -1,9 +1,11 @@
 package post
 
 import (
+	"mweibo/middleware/file"
 	"mweibo/middleware/logging"
 	"mweibo/model"
 	"mweibo/utils"
+	"os"
 	"strconv"
 	"strings"
 
@@ -14,16 +16,18 @@ func CreateWeiboPOST(c *gin.Context) {
 	// doctype, _ := strconv.Atoi(c.DefaultPostForm("doctype", "0"))
 	//title := c.DefaultPostForm("title", "")
 	// message := c.DefaultPostForm("message", "")
-	// attachFileString := c.PostForm("attachfiles")
-	// attachfiles := []string{}
-	// filesNum := 0
+
 	content := c.PostForm("content")
 	tags := c.PostForm("tags")
 	code := utils.SUCCESS
-	// if len(attachFileString) > 0 {
-	// 	attachfiles = strings.Split(attachFileString, ",")
-	// 	filesNum = len(attachfiles)
-	// }
+
+	attachFileString := c.PostForm("attachfiles")
+	attachfiles := []string{}
+	attachsCnt := 0
+	if len(attachFileString) > 0 {
+		attachfiles = strings.Split(attachFileString, ",")
+		attachsCnt = len(attachfiles)
+	}
 
 	// 微博内容、长度验证
 	uid, _ := strconv.Atoi(utils.GetSession(c, "userid"))
@@ -31,16 +35,47 @@ func CreateWeiboPOST(c *gin.Context) {
 	weibo := &model.Weibo{
 		UserID: uint(uid),
 		// UserIP:   uip,
-		Content: content,
-		// FilesNum: filesNum,
+		Content:    content,
+		AttachsCnt: attachsCnt,
 		// LastDate: time.Now(),
 	}
-	err := model.CreateWeibo(weibo)
+	newWeibo, err := model.NewWeibo(weibo)
 	if err != nil {
 		logging.Info("weibo入库错误", err.Error())
 		code = utils.ERROR_SQL_INSERT_FAIL
 		utils.ResponseJSONError(c, code)
 		return
+	}
+	//article_service.AfterAddNewWeibo(newWeibo)
+	if len(attachFileString) > 0 {
+		for _, v := range attachfiles {
+			fileSli := strings.Split(v, "|")
+			fname := fileSli[0]
+			origname := fileSli[1]
+			ftype := file.GetType(fname)
+			ofile, err := os.Open(fname)
+			defer ofile.Close()
+			if err != nil {
+				continue
+			}
+			fsize, _ := file.GetSize(ofile)
+			attach := &model.Attach{
+				WeiboID: int(newWeibo.ID),
+				//ReplyID:     int(new.ID),
+				UserID:    uid,
+				Filename:  fname,
+				OrigiName: origname,
+				Filetype:  ftype,
+				Filesize:  fsize,
+			}
+			_, err = model.CreateAttach(attach)
+			if err != nil {
+				logging.Info("attach入库错误", err.Error())
+				code = utils.ERROR_SQL_INSERT_FAIL
+				utils.ResponseJSONError(c, code)
+				return
+			}
+		}
 	}
 	if len(tags) > 0 {
 		sli := strings.Split(tags, ",")
@@ -57,6 +92,7 @@ func CreateWeiboPOST(c *gin.Context) {
 	//c.Redirect(http.StatusMovedPermanently, "/")
 }
 
+// func DeleteWeibos(){}
 func DeleteWeibo(c *gin.Context) {
 	weiboid := c.Param("id")
 	weiid, _ := strconv.ParseUint(weiboid, 10, 64)
@@ -127,19 +163,19 @@ func UpdateWeiboPOST(c *gin.Context) {
 	utils.ResponseJSONOK(c, code, nil)
 }
 
-// // // 添加附件
-// // // 直接添加到表中，因为以及各有了文章  所以可以直接添加
-// // func AddweiboAttach(c *gin.Context) {
-// // 	// 获取文件内容
-// // 	// 获取weiboid commentid uid
-// // 	// 修改weibo表的files字段 + 1
-// // 	// 在attach表中添加一天新的记录
-// // }
+// // 添加附件
+// // 直接添加到表中，因为以及各有了文章  所以可以直接添加
+// func AddweiboAttach(c *gin.Context) {
+// 	// 获取文件内容
+// 	// 获取weiboid commentid uid
+// 	// 修改weibo表的files字段 + 1
+// 	// 在attach表中添加一天新的记录
+// }
 
-// // // 删除的附件  知己额删除  提供好attach的id  就能删除
-// // func DelweiboAttach(c *gin.Context) {
-// // 	// 删除数据内容  删除文件内容
-// // 	// 获取weiboid
-// // 	// 修改weibo表的files字段 - 1
-// // 	// 在attach表中直接删除记录
-// // }
+// // 删除的附件  知己额删除  提供好attach的id  就能删除
+// func DelweiboAttach(c *gin.Context) {
+// 	// 删除数据内容  删除文件内容
+// 	// 获取weiboid
+// 	// 修改weibo表的files字段 - 1
+// 	// 在attach表中直接删除记录
+// }

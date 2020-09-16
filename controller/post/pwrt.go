@@ -5,6 +5,7 @@ import (
 	"mweibo/middleware/flash"
 	"mweibo/middleware/validate"
 	"mweibo/model"
+	"mweibo/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -43,4 +44,37 @@ func ResetPasswordPOST(c *gin.Context) {
 	}
 	flash.NewSuccessFlash(c, "重置密码成功")
 	//controllers.RedirectRouter(c, "root")
+}
+
+func ResetUserPassword(c *gin.Context) {
+	oldpassword := c.PostForm("password_old")
+	newpassword := c.PostForm("password_new")
+	uid := c.Param("id")
+	code := utils.SUCCESS
+	// 验证原来的密码正确性
+	maps := make(map[string]interface{})
+	maps["id"] = uid
+	user, err := model.GetUserObjectByMaps(maps)
+	if err != nil {
+		code = utils.ERROR_NOT_EXIST_USER
+		utils.ResponseJSONError(c, code)
+		return
+	}
+	// 获取加密的密码
+	hashPassword := user.Password
+	if !utils.VerifyString(oldpassword, hashPassword) {
+		code = utils.ERROR
+		utils.ResponseJSONError(c, code)
+		return
+	}
+	user.Password, _ = utils.BcryptString(newpassword)
+	// var wmap = make(map[string]interface{})
+	// err := model.UpdateUser(wmap, map[string]interface{}{"password": password})
+	err = model.ResetPasswordByID(user.Password, int(user.ID))
+	if err != nil {
+		code = utils.ERROR
+		utils.ResponseJSONError(c, code)
+		return
+	}
+	utils.ResponseJSONOK(c, code, nil)
 }

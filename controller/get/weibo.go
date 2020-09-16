@@ -30,6 +30,7 @@ func DisplayWeibo(c *gin.Context) {
 	islogin := userservice.IsLogin(c)
 	sessions := userservice.GetSessions(c)
 	commentlist, _ := model.ListCommentsByWeiboID(weiboID, 500)
+	attachs, _ := model.ListAttachsByWeiboID(int(weiboID))
 	c.HTML(http.StatusOK, "weibo/display.html", gin.H{
 		"weibo": weibo,
 		// "fcomment":         fcomment,
@@ -37,7 +38,7 @@ func DisplayWeibo(c *gin.Context) {
 		"sessions":    sessions,
 		"commentlist": commentlist,
 		// "comment_list_len": commentlistLen,
-		// "attachs":        attachs,
+		"attachs": attachs,
 		// "isfav":          isfav,
 	})
 }
@@ -48,12 +49,12 @@ func UpdateWeiboGET(c *gin.Context) {
 	// fcomment, _ := model.GetWeiboFirstCommentByTid(weiboID)
 	islogin := userservice.IsLogin(c)
 	sessions := userservice.GetSessions(c)
-	// attachs, _ := model.GetAttachsByCommentID(int(fcomment.ID))
+	attachs, _ := model.ListAttachsByWeiboID(int(weiboID))
 	c.HTML(http.StatusOK, "weibo/update.html", gin.H{
 		"weibo": weibo,
 		// "fcomment":   fcomment,
 		"islogin":  islogin,
 		"sessions": sessions,
-		// "attachs":  attachs,
+		"attachs":  attachs,
 	})
 }

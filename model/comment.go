@@ -21,6 +21,11 @@ func CreateComment(comment *Comment) error {
 	return DB.Create(&comment).Error
 }
 
+func NewComment(comment *Comment) (*Comment, error) {
+	err := DB.Create(comment).Error
+	return comment, err
+}
+
 func UpdateCommentByID(id int, comment Comment) (newcommentt Comment, err error) {
 	err = DB.Model(&Comment{}).Where("id = ?", id).Updates(comment).Error
 	newcommentt, err = GetCommentByID(id)
@@ -92,3 +97,17 @@ func CountComments() (count int) {
 	DB.Model(&Comment{}).Count(&count)
 	return
 }
+
+// func AfterAddNewComment(comment *model.Comment, articleID int) {
+// 	articleInfo, _ := model.GetArticleById(articleID)
+// 	updateArticle := model.Article{
+// 		LastDate:    time.Now(),
+// 		CommentsCnt:   articleInfo.CommentsCnt + 1,
+// 		LastUserID:  comment.UserID,
+// 		LastCommentID: int(comment.ID),
+// 	}
+// 	model.UpdateArticle(articleID, updateArticle)
+// 	model.AddMyComment(comment.UserID, articleID, int(comment.ID))
+// 	oldUserInfo, _ := model.GetUserByID(comment.UserID)
+// 	model.UpdateUserCommentsCnt(comment.UserID, oldUserInfo.CommentsCnt+1)
+// }

@@ -1,12 +1,5 @@
 {{define "weibo/display.html"}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weibo Detail</title>
-</head>
-<body>
+{{template "header.html" .}}
     {{template "header.html" .}}
     <tr th:each="tag : ${weibo.tags}">
         {{range $k,$v := .weibo.Tags}}
@@ -42,6 +35,5 @@
     </div>
     <button><a href="/auth/comment/{{.ID}}">修改评论</a></button>
     {{end}}
-</body>
-</html>
+    {{template "footer.html" }}
 {{end}}

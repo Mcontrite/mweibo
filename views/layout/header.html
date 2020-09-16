@@ -1,40 +1,84 @@
 {{define "header.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/static/js/jquery.min.js"></script>
+    <script>
+        var simplemde;
+        $(document).ready(function () {       
+            $('#postSave').click(function (event) {
+                event.preventDefault();
+                
+                var tags = new Array();
+                $(".tagButton .tagId").each(function (index, element) {
+                    tags.push($(element).text());
+                });
+                $("#tags").val(tags.join(","));
+                $("#postForm").submit();
+            });
+
+            $('#addTag').editable({
+                mode: "inline",
+                type: "text",
+                pk: 1,
+                url: "/newtags",
+                placeholder: "add a tag",
+                success: function (tag) {
+                    createButton(tag.data.ID, tag.data.Name);
+                },
+                error: function (e) {
+                    console.log(e);
+                },
+                display: function (value, response) {
+                    return false;   //disable this method
+                }
+            });
+        });
+        function deleteTag(element) {
+            $(element).parent().remove();
+        }
+        function createButton(tagId, tagName) {
+            var button = `<button class="btn btn-default btn-sm tagButton">
+                <a href="/tag/` + tagId + `">` + tagName + `</a>
+                <a class="removeArticleTag" href="#" onclick="deleteTag(this);">
+                    <span class="glyphicon glyphicon glyphicon-trash"></span>
+                </a>
+                <span class="tagId" hidden="hidden">` + tagId + `</span>
+                </button>&nbsp;`;
+            $("#addTag").before(button);
+        }
+    </script>
+    <title>?</title>
+</head>
+<body>
+
 <nav>
     <div>
-        <ul>
-            <li><a href="/">MWeiBo</a></li>
-            <li><a href="/">Admin</a></li>
-        </ul>
-        <ul>
-            <!-- {{if .user}}
-            <li><a href="/">This is {{.user.Username}}</a></li>
-            {{if .avatar}}
-            <div class="pull-left image"  >
-                <img src="{{.user.Avatar}}" width="40px" height="40px" style="border-radius: 50%; margin-top:5px">
-            </div>
-            {{else}}
-                <div class="pull-left image"  >
-                    <img src="/static/img/avatar.png">
-                </div>
-            {{end}}
-            <li><a href="/logout">退出登录</a></li>
-            {{else}}
-            <li><a href="/login">登录</a></li>
-            <li><a href="/register">注册</a></li>
-            ??
-            {{end}} -->
-
+        <div align="left">
+            <a href="/">MWeiBo</a>&nbsp&nbsp&nbsp&nbsp
+            <a href="/">Admin</a>&nbsp&nbsp&nbsp&nbsp
+        </div>
+        
+        <div align="right">
             {{if .islogin}}
-            <li><a href="/my_favorite.html">个人中心</a></li>
-            <li class="active"><a href="/my.html">{{.sessions.Username}}</a></li>
+            <a href="/my_favorite.html">个人中心</a>&nbsp&nbsp&nbsp&nbsp
+            <a href="/my.html">{{.sessions.Username}}</a>&nbsp&nbsp&nbsp&nbsp
             
-            <li><a id="logout" href="/logout">退出</a></li>
+            <a id="logout" href="/logout">退出</a>&nbsp&nbsp&nbsp&nbsp
             {{else}}
-            <li><a href="/login">登录/注册</a></li>
+            <a href="/login">登录</a>&nbsp&nbsp&nbsp&nbsp
+            <a href="/register">注册</a>&nbsp&nbsp&nbsp&nbsp
             {{end}}
 
-            <a href="/auth/weibo">写微博</a>
-        </ul>
+            <a href="/auth/weibo">写微博</a>&nbsp&nbsp&nbsp&nbsp
+        </div>
     </div>
+    Welcome To Mweibo
+    {{if .user}}
+    This is Home of {{.user.Username}} on #{{.message}}#
+    {{end}}
+    <hr>
 </nav>
 {{end}}
