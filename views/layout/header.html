@@ -4,52 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/static/js/jquery.min.js"></script>
-    <script>
-        var simplemde;
-        $(document).ready(function () {       
-            $('#postSave').click(function (event) {
-                event.preventDefault();
-                
-                var tags = new Array();
-                $(".tagButton .tagId").each(function (index, element) {
-                    tags.push($(element).text());
-                });
-                $("#tags").val(tags.join(","));
-                $("#postForm").submit();
-            });
-
-            $('#addTag').editable({
-                mode: "inline",
-                type: "text",
-                pk: 1,
-                url: "/newtags",
-                placeholder: "add a tag",
-                success: function (tag) {
-                    createButton(tag.data.ID, tag.data.Name);
-                },
-                error: function (e) {
-                    console.log(e);
-                },
-                display: function (value, response) {
-                    return false;   //disable this method
-                }
-            });
-        });
-        function deleteTag(element) {
-            $(element).parent().remove();
-        }
-        function createButton(tagId, tagName) {
-            var button = `<button class="btn btn-default btn-sm tagButton">
-                <a href="/tag/` + tagId + `">` + tagName + `</a>
-                <a class="removeArticleTag" href="#" onclick="deleteTag(this);">
-                    <span class="glyphicon glyphicon glyphicon-trash"></span>
-                </a>
-                <span class="tagId" hidden="hidden">` + tagId + `</span>
-                </button>&nbsp;`;
-            $("#addTag").before(button);
-        }
-    </script>
     <title>?</title>
 </head>
 <body>

@@ -1,18 +1,9 @@
 {{define "comment/update.html"}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Comment</title>
-</head>
-<body>
     {{template "header.html" .}}
     <form action="" method="POST">
         <input type="hidden" name="comment_id" value="{{.comment.ID}}"></input>
         <textarea id="demo" name="content">{{.comment.Content}}</textarea><br/>
         <button type="submit">更新</button>
     </form>
-</body>
-</html>
+    {{template "footer.html" }}
 {{end}}

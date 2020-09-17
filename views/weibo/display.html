@@ -1,5 +1,4 @@
 {{define "weibo/display.html"}}
-{{template "header.html" .}}
     {{template "header.html" .}}
     <tr th:each="tag : ${weibo.tags}">
         {{range $k,$v := .weibo.Tags}}
@@ -10,15 +9,21 @@
     </tr>
     <span>{{.weibo.CreatedAt}}</span>
     <span>{{.weibo.ViewsCnt}}</span>
+    <br><br><br>
     <div id="content">{{.weibo.Content}}</div>
-    <button><a href="/auth/comment">高级评论</a></button>
+    <br><br><br>
+    {{if eq .sessions.Userid .weibo.UserID}}
+    <button><a href="/auth/weibo/{{.weibo.ID}}">更新微博</a></button>
+    {{end}}
+    <hr>
     <div>
         <form action="/auth/comment" method="post">
             <div >
-                Create Comment
+                Create Comment <br>
                 <input type="hidden" name="weiboid" value="{{.weibo.ID}}"></input>
                 <textarea name="content"></textarea><br/>
-                <button type="submit">简单评论
+                <button type="submit">简单评论</button>
+                <button><a href="/auth/comment">高级评论</a></button>
             </div>
         </form>
     </div>
@@ -26,7 +31,7 @@
     {{range .commentlist}}
     <div class="pname">
         <h4 class="mb-10">  
-            <a href="#" class="card-title l-blue">UserID: {{.UserID}}</a>
+            <a href="#" class="card-title l-blue">{{.User.Username}} - {{.UserID}}</a>
             <small><i class="icofont icofont-ui-calendar"></i>
                 {{.CreatedAt}} 
             </small>

@@ -1,12 +1,4 @@
 {{define "admin/weibos.html"}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>weibos</title>
-</head>
-<body>
     {{template "header.html" .}}
     <h1>user List</h1> 
     {{range .weibos}}
@@ -22,6 +14,5 @@
         </td>
     </tr><br>
     {{end}}
-</body>
-</html>
+    {{template "footer.html" }}
 {{end}}

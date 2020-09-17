@@ -143,7 +143,7 @@ func ListWeibosByTag(tag string) (weibos []*Weibo, err error) {
 			weibos = append(weibos, &weibo)
 		}
 	} else {
-		err = DB.Order("created_at desc").Find(&weibos).Error
+		err = DB.Preload("User").Order("created_at desc").Find(&weibos).Error
 	}
 	return
 }
