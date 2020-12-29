@@ -72,6 +72,19 @@ func GetUser(c *gin.Context) {
 	})
 }
 
+func UserInfo(c *gin.Context) {
+	islogin := userservice.IsLogin(c)
+	sessions := userservice.GetSessions(c)
+	uid := sessions.Userid
+	userinfo, _ := model.GetUserObjectByID(uid)
+	c.HTML(200, "user/display.html", gin.H{
+		"islogin":  islogin,
+		"sessions": sessions,
+		"userinfo": userinfo,
+		//"webname":  webname,
+	})
+}
+
 // 用户详情
 func DisplayUser(c *gin.Context, ctxuser *model.User) {
 	id, err := ctr.GetIntParam(c, "id")

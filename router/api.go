@@ -27,6 +27,9 @@ func registerApi(e *gin.Engine) {
 	e.GET("/createtags", ctrpost.CreateTagsGET)
 	e.POST("/createtags", ctrpost.CreateTag)
 
+	//e.GET("/user/:id", AuthUser(ctrget.DisplayUser))
+	e.GET("/user/:id", ctrget.UserInfo)
+
 	auth := e.Group("/auth")
 	// auth.Use(Auth())
 	//auth.Use()

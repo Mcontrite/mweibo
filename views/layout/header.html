@@ -18,7 +18,7 @@
         <div align="right">
             {{if .islogin}}
             <a href="/my_favorite.html">个人中心</a>&nbsp&nbsp&nbsp&nbsp
-            <a href="/my.html">{{.sessions.Username}}</a>&nbsp&nbsp&nbsp&nbsp
+            <a href="/user/{{.sessions.Userid}}">{{.sessions.Username}}</a>&nbsp&nbsp&nbsp&nbsp
             
             <a id="logout" href="/logout">退出</a>&nbsp&nbsp&nbsp&nbsp
             {{else}}
