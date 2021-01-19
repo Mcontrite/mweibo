@@ -1,9 +1,0 @@
-{{define "comment/update.html"}}
-    {{template "header.html" .}}
-    <form action="" method="POST">
-        <input type="hidden" name="comment_id" value="{{.comment.ID}}"></input>
-        <textarea id="demo" name="content">{{.comment.Content}}</textarea><br/>
-        <button type="submit">更新</button>
-    </form>
-    {{template "footer.html" }}
-{{end}}
