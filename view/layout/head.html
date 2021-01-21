@@ -1,0 +1,26 @@
+{{define "head.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MWeibo2</title>
+</head>
+<body>
+<nav>MWeibo2</nav>    
+<nav>
+    {{if .islogin}}
+    LOGIN: True <br>
+    UserID: {{.usersession.UserID}}, Username: {{.usersession.Username}}
+    <a href="/logout">退出</a> <br>
+    {{else}}
+    LOGIN: False
+    <a href="/login">登录</a>/<a href="/register">注册</a><br>
+    {{end}}
+</nav>
+<nav>
+    {{if .user}}
+    Welcome {{.user.Username}} !
+    {{end}}
+</nav>
+{{end}}
