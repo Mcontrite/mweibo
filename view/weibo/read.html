@@ -1,0 +1,26 @@
+{{define "weibo/read.html"}}
+{{template "head.html" .}}
+<p>
+    Created At: {{.weibo.CreateAt}} <br>
+    Views Count: {{.weibo.ViewsCnt}} <br>
+</p>
+<p>
+    Weibo Content: <br>
+    {{.weibo.Content}}
+</p>
+<div>
+    <button>
+        <a href="/auth/weibo/{{.weibo.ID}}">更新微博</a>
+    </button>
+</div>
+<form action="/auth/comment" method="POST">
+    <textarea name="content" id="" cols="30" rows="10"></textarea>
+    <button type="submit">评论</button>
+</form>
+<div>
+    Comment List: <br>
+    {{range .comments}}
+    {{end}}
+</div>
+{{template "foot.html"}}
+{{end}}
