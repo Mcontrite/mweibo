@@ -1,0 +1,10 @@
+{{define "weibo/create.html"}}
+{{template "head.html" .}}
+{{if .islogin}}
+<form action="" method="POST">
+    <textarea name="content" id="" cols="30" rows="10"></textarea> <br>
+    <button type="submit">发布微博</button>
+</form>
+{{end}}
+{{template "foot.html"}}
+{{end}}

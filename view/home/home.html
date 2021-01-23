@@ -1,5 +1,20 @@
 {{define "home/home.html"}}
 {{template "head.html" .}}
-    <h1>This is Home !</h1>
+<h1>This is Home !</h1>
+<!-- <div>
+    Weibo List: <br>
+    {{range $k,$v:=.weibos}}
+    <a href="/weibo/{{$v.ID}}">{{$v.Content}}</a> <br>
+    Created At: {{$v.CreatedAt}}
+    {{end}}
+</div> -->
+<div>
+    Weibo List: <br>
+    {{range .weibos}}
+    <a href="/weibo/{{.ID}}">{{.Content}}</a> <br>
+    Created At: {{.CreatedAt}} <br>
+    By - {{.UserID}} - {{.User.Username}} <br>
+    {{end}}
+</div>
 {{template "foot.html"}}
 {{end}}

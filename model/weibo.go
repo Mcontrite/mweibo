@@ -36,3 +36,8 @@ func UpdateWeiboViewsCnt(weibo *Weibo) error {
 func DeleteWeibo(weibo *Weibo) error {
 	return DB.Delete(weibo).Error
 }
+
+func ListWeibosObject() (weibos []Weibo, err error) {
+	err = DB.Preload("User").Model(&Weibo{}).Order("updated_at desc").Limit(6).Find(&weibos).Error
+	return
+}

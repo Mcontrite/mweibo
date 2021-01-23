@@ -10,8 +10,7 @@
 <nav>MWeibo2</nav>    
 <nav>
     {{if .islogin}}
-    LOGIN: True <br>
-    UserID: {{.usersession.UserID}}, Username: {{.usersession.Username}}
+    LOGIN: True, UserID: {{.usersession.UserID}}, Username: {{.usersession.Username}}
     <a href="/logout">退出</a> <br>
     {{else}}
     LOGIN: False
@@ -20,7 +19,8 @@
 </nav>
 <nav>
     {{if .user}}
-    Welcome {{.user.Username}} !
+    Welcome {{.user.Username}} ! <br>
     {{end}}
+    <a href="/auth/create">写微博</a>
 </nav>
 {{end}}

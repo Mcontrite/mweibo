@@ -1,7 +1,7 @@
 {{define "weibo/read.html"}}
 {{template "head.html" .}}
 <p>
-    Created At: {{.weibo.CreateAt}} <br>
+    Created At: # <br>
     Views Count: {{.weibo.ViewsCnt}} <br>
 </p>
 <p>
@@ -9,17 +9,26 @@
     {{.weibo.Content}}
 </p>
 <div>
+    {{if eq .usersession.UserID .weibo.UserID}}
     <button>
         <a href="/auth/weibo/{{.weibo.ID}}">更新微博</a>
     </button>
+    {{end}}
 </div>
 <form action="/auth/comment" method="POST">
-    <textarea name="content" id="" cols="30" rows="10"></textarea>
+    <h4>New Comment</h4>
+    <input type="hidden" name="weiboid" value="{{.weibo.ID}}">
+    <textarea name="content" id="" cols="30" rows="10"></textarea> <br>
     <button type="submit">评论</button>
 </form>
 <div>
     Comment List: <br>
     {{range .comments}}
+    <h5>
+        By: <a href="">{{.User.ID}} - {{.User.Username}}</a> <br>
+    </h5>
+    <p>{{.Content}}</p>
+    <h5>Create At: {{.CreatedAt}}</h5>
     {{end}}
 </div>
 {{template "foot.html"}}

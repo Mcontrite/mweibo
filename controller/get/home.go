@@ -9,6 +9,7 @@ import (
 )
 
 func Home(c *gin.Context) {
+	weibos, _ := model.ListWeibosObject()
 	islogin := service.IsLogin(c)
 	usersession := service.GetUserSession(c)
 	user, _ := model.GetUserObjectByID(usersession.UserID)
@@ -16,6 +17,7 @@ func Home(c *gin.Context) {
 		"islogin":     islogin,
 		"usersession": usersession,
 		"user":        user,
+		"weibos":      weibos,
 	})
 }
 

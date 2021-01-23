@@ -1,0 +1,10 @@
+{{define "weibo/update.html"}}
+{{template "head.html" .}}
+<form action="" method="POST">
+    <textarea name="content" id="" cols="30" rows="10">
+        {{.weibo.Content}}
+    </textarea> <br>
+    <button type="submit">更新微博</button>
+</form>
+{{template "foot.html"}}
+{{end}}

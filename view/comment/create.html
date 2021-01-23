@@ -1,0 +1,9 @@
+{{define "comment/create.html"}}
+{{template "head.html" .}}
+<form action="/auth/comment" method="POST">
+    <h4>Create Comment</h4>
+    <textarea name="content" id="" cols="30" rows="10"></textarea> <br>
+    <button type="submit">发布高级评论</button>
+</form>
+{{template "foot.html"}}
+{{end}}
